@@ -4,7 +4,7 @@ import {
   Clock, 
   MapPin, 
   BookOpen, 
-  Wand2, 
+  Sparkles, 
   Award, 
   Mail, 
   Gift, 
@@ -30,7 +30,7 @@ export default function ComponentsPanel({ onAddComponent }: ComponentsPanelProps
           key: 'hero' as const,
           name: 'Hero Cover Section',
           desc: 'Tampilan pembuka halaman undangan lengkap dengan inisial nama.',
-          icon: Wand2,
+          icon: Sparkles,
           color: 'text-amber-500 bg-amber-50',
         },
         {

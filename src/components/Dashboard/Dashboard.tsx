@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../utils/supabaseClient';
 import {
   Plus, LogOut, ExternalLink, Trash2, Edit3, CreditCard,
-  CheckCircle, AlertCircle, Wand2, Heart, Grid,
+  CheckCircle, AlertCircle, Sparkles, Heart, Grid,
   BarChart3, Send, Clock, X, Eye, Zap, Crown,
   ChevronDown, Bell, MoreVertical, Globe, Lock,
   Activity, PieChart, Layers, Settings, Users, ArrowUpRight, Upload, Share2, ClipboardList, AlertTriangle,
@@ -628,7 +628,7 @@ export default function Dashboard({
                               />
                             ) : (
                               <div className="w-full h-full flex flex-col items-center justify-center space-y-2 bg-[#090c15]">
-                                <Wand2 className="w-5 h-5 text-slate-700 animate-bounce" />
+                                <Sparkles className="w-5 h-5 text-slate-700 animate-bounce" />
                                 <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Generating Cover...</span>
                               </div>
                             )}
@@ -866,7 +866,7 @@ export default function Dashboard({
                             />
                           ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center space-y-2 bg-[#090c15]">
-                              <Wand2 className="w-5 h-5 text-slate-700 animate-bounce" />
+                              <Sparkles className="w-5 h-5 text-slate-700 animate-bounce" />
                               <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Generating Cover...</span>
                             </div>
                           )}
@@ -1266,7 +1266,7 @@ export default function Dashboard({
             <div className="px-6 py-5 border-b border-slate-900/60 flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
                 <div className="w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center text-blue-400">
-                  <Wand2 className="w-4.5 h-4.5" />
+                  <Sparkles className="w-4.5 h-4.5" />
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-white">Buat Undangan Baru</h3>

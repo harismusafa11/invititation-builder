@@ -31,7 +31,7 @@ import AuthPortal from './components/Auth/AuthPortal';
 import Dashboard from './components/Dashboard/Dashboard';
 import TemplatesCatalog from './components/Dashboard/TemplatesCatalog';
 import BlogPortal from './components/Dashboard/BlogPortal';
-import { CreditCard, CheckCircle, AlertCircle, Heart, Smartphone, Music, VolumeX, Volume2, Plus, Code, X, Copy, Check, Wand2, Crown, ZoomIn, ZoomOut } from 'lucide-react';
+import { CreditCard, CheckCircle, AlertCircle, Heart, Smartphone, Music, VolumeX, Volume2, Plus, Code, X, Copy, Check, Sparkles, Crown, ZoomIn, ZoomOut } from 'lucide-react';
 
 export default function App() {
   // --- 0. Lightweight Router & Public Share State ---
@@ -1909,7 +1909,7 @@ export default function App() {
         <div className="w-full max-w-md bg-white border border-slate-200 rounded-[32px] p-8 shadow-[0_20px_50px_rgba(212,175,55,0.06)] relative z-10 space-y-6 animate-in zoom-in-95 duration-200">
           <div className="text-center space-y-2">
             <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-amber-500/5">
-              <Wand2 className="w-6 h-6 text-amber-600" />
+              <Sparkles className="w-6 h-6 text-amber-600" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-[#0B132B] uppercase mt-4">Lengkapi Profil Anda</h2>
             <p className="text-xs text-slate-400 max-w-[280px] mx-auto leading-relaxed mt-1">

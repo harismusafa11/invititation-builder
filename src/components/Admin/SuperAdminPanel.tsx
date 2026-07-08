@@ -22,7 +22,7 @@ import {
   Upload,
   Image as ImageIcon,
   Volume2,
-  Wand2
+  Sparkles
 } from 'lucide-react';
 
 interface SuperAdminPanelProps {
@@ -1628,7 +1628,7 @@ export default function SuperAdminPanel({ onExit, onEditTemplate, onCreateNewTem
                           />
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center space-y-2 bg-[#090c15]">
-                            <Wand2 className="w-5 h-5 text-slate-750 animate-pulse" />
+                            <Sparkles className="w-5 h-5 text-slate-750 animate-pulse" />
                             <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">No Cover Preview</span>
                           </div>
                         )}

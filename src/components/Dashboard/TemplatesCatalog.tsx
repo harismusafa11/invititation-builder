@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Wand2, Sparkles, Heart, CheckCircle2, ChevronRight, Smartphone, LogIn } from 'lucide-react';
+import { ArrowLeft, Sparkles, Heart, CheckCircle2, ChevronRight, Smartphone, LogIn } from 'lucide-react';
 
 interface TemplatesCatalogProps {
   onBack: () => void;
@@ -40,7 +40,7 @@ export default function TemplatesCatalog({ onBack, onSelectTemplate, customTempl
         >
           {isGuestLanding ? (
             <>
-              <Wand2 className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               <span>Mulai dari Nol</span>
             </>
           ) : (
@@ -156,7 +156,7 @@ export default function TemplatesCatalog({ onBack, onSelectTemplate, customTempl
                     onClick={() => onSelectTemplate(tpl.key)}
                     className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 cursor-pointer border-0 shadow-lg shadow-blue-600/15"
                   >
-                    <Wand2 className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3.5 h-3.5" />
                     <span>Gunakan</span>
                   </button>
                 </div>

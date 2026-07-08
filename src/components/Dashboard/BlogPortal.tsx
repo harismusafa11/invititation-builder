@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Clock, User, Heart, Compass, Sparkles, ChevronRight, Wand2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock, User, Heart, Compass, Sparkles, ChevronRight } from 'lucide-react';
 
 interface BlogPortalProps {
   onBack: () => void;
@@ -253,7 +253,7 @@ export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps
                 onClick={() => onSelectTemplate('premiumIndonesianFloral')}
                 className="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-2 shrink-0 cursor-pointer border-0 shadow-lg shadow-blue-600/20"
               >
-                <Wand2 className="w-4.5 h-4.5" />
+                <Sparkles className="w-4.5 h-4.5" />
                 <span>Buat Undangan Gratis</span>
               </button>
             </div>

@@ -17,12 +17,12 @@ import {
   CreditCard,
   MapPin,
   Clock,
-  Wand2,
   Clipboard,
   FlipHorizontal,
   FlipVertical,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Sparkles
 } from 'lucide-react';
 import { InvitationElement } from '../../types';
 import { PRESET_FONTS } from '../../utils/defaults';
@@ -1526,7 +1526,7 @@ export default function PropertiesPanel({
       {selectedElement.type === 'widget' && !showAnimSection && (
         <div className="space-y-4 pt-4 border-t border-slate-100">
           <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1">
-            <Wand2 className="w-3.5 h-3.5 text-blue-500" />
+            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
             <span className="capitalize">{selectedElement.widgetType} Config</span>
           </h4>
 

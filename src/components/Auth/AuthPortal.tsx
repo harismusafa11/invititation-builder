@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { supabase } from '../../utils/supabaseClient';
-import { Mail, Lock, Heart, ShieldAlert, Wand2, UserPlus, LogIn, User, AtSign } from 'lucide-react';
+import { Mail, Lock, Heart, ShieldAlert, Sparkles, UserPlus, LogIn, User, AtSign } from 'lucide-react';
 
 export default function AuthPortal() {
   const [isRegister, setIsRegister] = useState(false);
@@ -156,7 +156,7 @@ export default function AuthPortal() {
         )}
         {infoMsg && (
           <div className="p-3.5 bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-semibold rounded-xl flex items-start space-x-2 animate-in fade-in duration-200">
-            <Wand2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+            <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
             <span>{infoMsg}</span>
           </div>
         )}

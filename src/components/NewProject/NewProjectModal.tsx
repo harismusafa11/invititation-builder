@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Wand2, FolderPlus, FilePlus, Heart, Check } from 'lucide-react';
+import { X, Sparkles, FolderPlus, FilePlus, Heart, Check } from 'lucide-react';
 import { InvitationTemplate } from '../../types';
 import { DEFAULT_TEMPLATES } from '../../utils/defaults';
 
@@ -165,7 +165,7 @@ export default function NewProjectModal({ onClose, onCreateProject, customTempla
                         </div>
                       ) : (
                         <div className="p-1 bg-slate-100 text-slate-400 rounded-full group-hover:bg-slate-200">
-                          {tpl.key === 'blank' ? <FilePlus className="w-3.5 h-3.5" /> : <Wand2 className="w-3.5 h-3.5" />}
+                          {tpl.key === 'blank' ? <FilePlus className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
                         </div>
                       )}
                     </div>
