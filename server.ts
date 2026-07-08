@@ -718,6 +718,31 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  app.get("/api/db-debug", async (req, res) => {
+    try {
+      const dbUrl = process.env.DATABASE_URL || "not-set";
+      const maskedUrl = dbUrl.replace(/:([^@]+)@/, ":***@");
+      const result = await dbQuery("SELECT COUNT(*) as count FROM invitations");
+      const resultTemplates = await dbQuery("SELECT COUNT(*) as count FROM invitations WHERE is_template = TRUE");
+      const allItems = await dbQuery("SELECT id, title, is_template FROM invitations LIMIT 10");
+      res.json({
+        success: true,
+        databaseUrl: maskedUrl,
+        vercel: !!process.env.VERCEL,
+        useLocalFallback,
+        totalInvitations: result.rows[0]?.count || 0,
+        totalTemplates: resultTemplates.rows[0]?.count || 0,
+        items: allItems.rows
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        error: err.message,
+        stack: err.stack
+      });
+    }
+  });
+
   // Get saved invitation (legacy fallback)
   app.get("/api/invitation", async (req, res) => {
     try {
