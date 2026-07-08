@@ -35,7 +35,7 @@ function getPool(): pg.Pool {
     // On Vercel, use max:2 — 1 for the API query + headroom for concurrent requests
     max: process.env.VERCEL ? 2 : 10,
     idleTimeoutMillis: 5000, // Aggressively close idle connections on serverless
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: process.env.VERCEL ? 15000 : 5000, // Longer timeout for Supabase cold starts
     ssl: { rejectUnauthorized: false }
   });
 
@@ -826,13 +826,36 @@ async function startServer() {
 
   // --- Multi-User REST Endpoints ---
 
-  // 0. List dynamic templates
+  // 0. List dynamic templates — only fetch lightweight fields for the catalog
+  // IMPORTANT: Do NOT select pages/background/settings — those are huge JSONB blobs
+  // that cause connection timeouts. The full data is loaded only when editing.
   app.get("/api/templates", async (req, res) => {
     try {
-      const result = await dbQuery("SELECT id, title, slug, background, settings, pages, is_template, thumbnail, updated_at FROM invitations WHERE is_template = TRUE ORDER BY updated_at DESC");
+      res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      const result = await dbQuery(
+        "SELECT id, title, slug, thumbnail, updated_at FROM invitations WHERE is_template = TRUE ORDER BY updated_at DESC"
+      );
       return res.json({ success: true, data: result.rows });
     } catch (error: any) {
       console.error("[API] Error loading templates:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // 0.1 Get full template data by ID (used when user clicks a template to load it)
+  app.get("/api/templates/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await dbQuery(
+        "SELECT id, title, slug, background, settings, pages, is_template, thumbnail, updated_at FROM invitations WHERE id = $1 AND is_template = TRUE LIMIT 1",
+        [id]
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ success: false, error: "Template not found" });
+      }
+      return res.json({ success: true, data: result.rows[0] });
+    } catch (error: any) {
+      console.error("[API] Error loading template by ID:", error);
       return res.status(500).json({ success: false, error: error.message });
     }
   });
@@ -1923,7 +1946,9 @@ async function startServer() {
   // --- Assets API Routes ---
   app.get("/api/assets", async (req, res) => {
     try {
-      const result = await dbQuery("SELECT id, name, url, category, premium FROM assets_library");
+      // Cache assets aggressively — they rarely change and are large
+      res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+      const result = await dbQuery("SELECT id, name, url, category, premium FROM assets_library ORDER BY category, name");
       return res.json({ success: true, data: result.rows });
     } catch (error: any) {
       console.error("[API] Get assets error:", error);

@@ -698,7 +698,7 @@ export default function App() {
   }, [pages, background, settings]);
 
   const loadTemplatePreset = async (templateKey: string) => {
-    // Refresh templates list first to ensure we use the latest admin edits
+    // Refresh lightweight templates list (id, title, slug, thumbnail only)
     const latestTemplates = await fetchCustomTemplates();
 
     // Priority 1: Check if there's an admin-edited version of a built-in template in DB
@@ -707,14 +707,25 @@ export default function App() {
     let targetTemplate: InvitationTemplate | undefined;
 
     if (foundBuiltinDb) {
-      targetTemplate = {
-        name: foundBuiltinDb.title,
-        background: foundBuiltinDb.background,
-        settings: foundBuiltinDb.settings,
-        pages: foundBuiltinDb.pages
-      };
-      console.log(`[Load Preset] Loaded admin-edited version of template '${templateKey}'`);
-    } else {
+      // Fetch FULL template data (pages/background/settings) from the dedicated endpoint
+      try {
+        const res = await fetch(`/api/templates/${builtinDbId}`);
+        const result = await res.json();
+        if (result.success && result.data) {
+          targetTemplate = {
+            name: result.data.title,
+            background: result.data.background,
+            settings: result.data.settings,
+            pages: result.data.pages
+          };
+          console.log(`[Load Preset] Loaded admin-edited version of template '${templateKey}'`);
+        }
+      } catch (err) {
+        console.error(`[Load Preset] Failed to fetch full template data for ${builtinDbId}:`, err);
+      }
+    }
+
+    if (!targetTemplate) {
       // Priority 2: Check static DEFAULT_TEMPLATES in code
       targetTemplate = DEFAULT_TEMPLATES[templateKey] as InvitationTemplate | undefined;
       if (targetTemplate) {
@@ -723,16 +734,24 @@ export default function App() {
     }
 
     if (!targetTemplate) {
-      // Priority 3: Check custom template from DB
+      // Priority 3: Check custom template from DB — fetch full data by ID
       const foundCustom = latestTemplates.find(t => t.id === templateKey);
       if (foundCustom) {
-        targetTemplate = {
-          name: foundCustom.title,
-          background: foundCustom.background,
-          settings: foundCustom.settings,
-          pages: foundCustom.pages
-        };
-        console.log(`[Load Preset] Loaded custom template '${templateKey}'`);
+        try {
+          const res = await fetch(`/api/templates/${templateKey}`);
+          const result = await res.json();
+          if (result.success && result.data) {
+            targetTemplate = {
+              name: result.data.title,
+              background: result.data.background,
+              settings: result.data.settings,
+              pages: result.data.pages
+            };
+            console.log(`[Load Preset] Loaded custom template '${templateKey}'`);
+          }
+        } catch (err) {
+          console.error(`[Load Preset] Failed to fetch full data for custom template ${templateKey}:`, err);
+        }
       }
     }
 
@@ -1981,31 +2000,6 @@ export default function App() {
           window.history.pushState({}, '', '/blog');
         }}
       />
-    );
-  }
-
-  // C.2 GUEST PUBLIC LANDING — show template catalog for guests with no active project
-  // Guests can browse and pick a template freely; login is only triggered on save.
-  // Skip landing if ?newProject=true (guest already selected a template) or ?showLogin=true
-  const _urlParams = new URLSearchParams(window.location.search);
-  const _isNewProject = _urlParams.get('newProject') === 'true';
-  const _isShowLogin = _urlParams.get('showLogin') === 'true';
-  if (isGuestMode && activeProjectId === null && !authLoading && !_isNewProject && !_isShowLogin) {
-    return (
-      <>
-        <TemplatesCatalog
-          onBack={() => {
-            // "Start from scratch" → open canvas editor with blank template
-            window.location.href = '/?newProject=true&template=blank';
-          }}
-          onSelectTemplate={(key) => {
-            window.location.href = `/?newProject=true&template=${key}`;
-          }}
-          customTemplates={customTemplates}
-          isGuestLanding={true}
-        />
-        <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
-      </>
     );
   }
 
