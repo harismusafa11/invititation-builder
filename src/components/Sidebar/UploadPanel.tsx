@@ -66,8 +66,10 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
   const [searchQuery, setSearchQuery] = useState('');
 
   const [customAssets, setCustomAssets] = useState<{ id: string; name: string; url: string; category: string; premium?: boolean }[]>([]);
+  const [assetsLoading, setAssetsLoading] = useState(true);
 
   useEffect(() => {
+    setAssetsLoading(true);
     fetch('/api/assets')
       .then(res => res.json())
       .then(result => {
@@ -75,7 +77,10 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
           setCustomAssets(result.data);
         }
       })
-      .catch(err => console.error('Failed to load custom assets:', err));
+      .catch(err => console.error('Failed to load custom assets:', err))
+      .finally(() => {
+        setAssetsLoading(false);
+      });
   }, []);
 
   const handleSetBackground = (url: string, e: React.MouseEvent) => {
@@ -314,47 +319,56 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
 
           {/* Premium Assets list */}
           <div className="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-0.5 pt-0.5">
-            {allPremiumFiltered.map((asset, idx) => {
-              const isLocked = asset.premium && !isPremium;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    if (isLocked) {
-                      onRequestUpgrade?.();
-                      return;
-                    }
-                    onAddImage(asset.url, asset.name);
-                  }}
-                  className="group relative border border-slate-100 hover:border-blue-400 hover:shadow p-2 rounded-xl flex flex-col items-center justify-center bg-white cursor-pointer hover:scale-105 transition-all h-20"
-                  title={isLocked ? `Premium - ${asset.name}` : `Tambah ${asset.name} ke canvas`}
-                >
-                  <img
-                    src={asset.url}
-                    className="w-10 h-10 object-contain drop-shadow-sm group-hover:rotate-6 transition-all"
-                    alt={asset.name}
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                  />
-                  <span className="text-[8px] text-slate-500 font-bold text-center truncate max-w-full block mt-1.5 px-0.5">
-                    {asset.name}
-                  </span>
-
-                  {isLocked ? (
-                    <div className="absolute inset-0 bg-slate-950/40 rounded-xl flex items-center justify-center text-white">
-                      <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-0.5 uppercase tracking-wider">
-                        👑 Lock
-                      </span>
-                    </div>
-                  ) : (
-                    /* Plus Overlay */
-                    <div className="absolute inset-0 bg-blue-600/5 rounded-xl opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                      <Plus className="w-4 h-4 text-blue-600" />
-                    </div>
-                  )}
+            {assetsLoading ? (
+              Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="border border-slate-100 p-2 rounded-xl flex flex-col items-center justify-center bg-white animate-pulse h-20">
+                  <div className="w-10 h-10 bg-slate-100 rounded-lg"></div>
+                  <div className="w-12 h-2 bg-slate-100 rounded mt-2"></div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              allPremiumFiltered.map((asset, idx) => {
+                const isLocked = asset.premium && !isPremium;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      if (isLocked) {
+                        onRequestUpgrade?.();
+                        return;
+                      }
+                      onAddImage(asset.url, asset.name);
+                    }}
+                    className="group relative border border-slate-100 hover:border-blue-400 hover:shadow p-2 rounded-xl flex flex-col items-center justify-center bg-white cursor-pointer hover:scale-105 transition-all h-20"
+                    title={isLocked ? `Premium - ${asset.name}` : `Tambah ${asset.name} ke canvas`}
+                  >
+                    <img
+                      src={asset.url}
+                      className="w-10 h-10 object-contain drop-shadow-sm group-hover:rotate-6 transition-all"
+                      alt={asset.name}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                    <span className="text-[8px] text-slate-500 font-bold text-center truncate max-w-full block mt-1.5 px-0.5">
+                      {asset.name}
+                    </span>
+
+                    {isLocked ? (
+                      <div className="absolute inset-0 bg-slate-950/40 rounded-xl flex items-center justify-center text-white">
+                        <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-0.5 uppercase tracking-wider">
+                          👑 Lock
+                        </span>
+                      </div>
+                    ) : (
+                      /* Plus Overlay */
+                      <div className="absolute inset-0 bg-blue-600/5 rounded-xl opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                        <Plus className="w-4 h-4 text-blue-600" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
 
             {allPremiumFiltered.length === 0 && (
               <div className="col-span-3 text-center py-8 text-slate-400 text-[10px] font-semibold">
@@ -385,44 +399,53 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
           </div>
 
           <div className="grid grid-cols-2 gap-2 max-h-[360px] overflow-y-auto pr-0.5">
-            {allFramesFiltered.map((asset, idx) => {
-              const isLocked = asset.premium && !isPremium;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    if (isLocked) {
-                      onRequestUpgrade?.();
-                      return;
-                    }
-                    onAddImage(asset.url, asset.name);
-                  }}
-                  className="group relative border border-slate-150 hover:border-blue-400 hover:shadow-md p-2 rounded-xl flex flex-col bg-white cursor-pointer hover:scale-[1.02] transition-all text-left"
-                  title={isLocked ? `Premium - ${asset.name}` : `Tambah ${asset.name} ke canvas`}
-                >
-                  <div className="relative w-full h-24 rounded-lg overflow-hidden bg-slate-50 flex items-center justify-center">
-                    <img src={asset.url} alt={asset.name} className="w-full h-full object-contain p-1" referrerPolicy="no-referrer" loading="lazy" />
-
-                    {isLocked ? (
-                      <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center text-white z-10">
-                        <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-2 py-1 rounded-full shadow-md flex items-center gap-0.5 uppercase tracking-wider">
-                          👑 Premium
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center z-10">
-                        <span className="bg-blue-600 text-white font-bold text-[8px] px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
-                          <Plus className="w-3.5 h-3.5" /> Gunakan Bingkai
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-[10px] text-slate-800 font-bold mt-1.5 block leading-tight truncate px-1">
-                    {asset.name}
-                  </span>
+            {assetsLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="border border-slate-150 p-2 rounded-xl bg-white animate-pulse h-32 flex flex-col justify-between">
+                  <div className="w-full h-24 bg-slate-100 rounded-lg"></div>
+                  <div className="w-16 h-2.5 bg-slate-100 rounded mt-2 mx-1"></div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              allFramesFiltered.map((asset, idx) => {
+                const isLocked = asset.premium && !isPremium;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      if (isLocked) {
+                        onRequestUpgrade?.();
+                        return;
+                      }
+                      onAddImage(asset.url, asset.name);
+                    }}
+                    className="group relative border border-slate-150 hover:border-blue-400 hover:shadow-md p-2 rounded-xl flex flex-col bg-white cursor-pointer hover:scale-[1.02] transition-all text-left"
+                    title={isLocked ? `Premium - ${asset.name}` : `Tambah ${asset.name} ke canvas`}
+                  >
+                    <div className="relative w-full h-24 rounded-lg overflow-hidden bg-slate-50 flex items-center justify-center">
+                      <img src={asset.url} alt={asset.name} className="w-full h-full object-contain p-1" referrerPolicy="no-referrer" loading="lazy" />
+
+                      {isLocked ? (
+                        <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center text-white z-10">
+                          <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-2 py-1 rounded-full shadow-md flex items-center gap-0.5 uppercase tracking-wider">
+                            👑 Premium
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center z-10">
+                          <span className="bg-blue-600 text-white font-bold text-[8px] px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+                            <Plus className="w-3.5 h-3.5" /> Gunakan Bingkai
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-800 font-bold mt-1.5 block leading-tight truncate px-1">
+                      {asset.name}
+                    </span>
+                  </div>
+                );
+              })
+            )}
 
             {allFramesFiltered.length === 0 && (
               <div className="col-span-2 text-center py-8 text-slate-400 text-[10px] font-semibold">

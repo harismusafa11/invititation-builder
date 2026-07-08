@@ -858,7 +858,8 @@ async function startServer() {
   app.get("/api/templates", async (req, res) => {
     try {
       // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
-      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
+      // Omit browser max-age to avoid net::ERR_CACHE_WRITE_FAILURE disk cache errors
+      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
       if (cachedTemplates && (now - templatesLastFetched < 30000)) { // 30 seconds cache
@@ -1985,7 +1986,8 @@ async function startServer() {
   app.get("/api/assets", async (req, res) => {
     try {
       // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
-      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
+      // Omit browser max-age to avoid net::ERR_CACHE_WRITE_FAILURE disk cache errors
+      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
       if (cachedAssets && (now - assetsLastFetched < 300000)) { // 5 minutes cache
@@ -2064,7 +2066,8 @@ async function startServer() {
   app.get("/api/features-config", async (req, res) => {
     try {
       // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
-      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
+      // Omit browser max-age to avoid net::ERR_CACHE_WRITE_FAILURE disk cache errors
+      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
       if (cachedFeatures && (now - featuresLastFetched < 300000)) { // 5 minutes cache
