@@ -26,10 +26,10 @@ function getPool(): pg.Pool {
   console.log(`[Database] Initializing connection pool using target URL...`);
   pool = new Pool({
     connectionString: dbUrl,
-    ssl: {
-      rejectUnauthorized: false, 
-    },
-    connectionTimeoutMillis: 5000, // 5s timeout
+    max: process.env.VERCEL ? 1 : 10, // Limit to 1 connection per serverless function to prevent Supabase connection exhaustion
+    idleTimeoutMillis: 10000, // Close idle connections after 10 seconds
+    connectionTimeoutMillis: 5000,
+    ssl: { rejectUnauthorized: false }
   });
 
   return pool;
