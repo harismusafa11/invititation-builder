@@ -188,12 +188,22 @@ export default function App() {
   const [isGuestMode, setIsGuestMode] = useState(true);
   const [showGuestAuthModal, setShowGuestAuthModal] = useState(false);
   const [guestAuthMode, setGuestAuthMode] = useState<'login' | 'register'>('register');
+  const [guestAuthReason, setGuestAuthReason] = useState<'save' | 'design'>('save');
   const [guestEmail, setGuestEmail] = useState('');
   const [guestPassword, setGuestPassword] = useState('');
   const [guestFullName, setGuestFullName] = useState('');
   const [guestUsername, setGuestUsername] = useState('');
   const [guestAuthLoading, setGuestAuthLoading] = useState(false);
   const [guestAuthError, setGuestAuthError] = useState<string | null>(null);
+
+  const checkGuestAction = (): boolean => {
+    if (isGuestMode) {
+      setGuestAuthReason('design');
+      setShowGuestAuthModal(true);
+      return true; // action is blocked
+    }
+    return false; // action is allowed
+  };
   
   // Settings for the active invitation design
   const [projectSlug, setProjectSlug] = useState('');
@@ -573,6 +583,7 @@ export default function App() {
 
   // --- Page Management Handlers ---
   const handleAddPage = () => {
+    if (checkGuestAction()) return;
     const newPage: InvitationPage = {
       id: `page-${generateId()}`,
       name: `Page ${pages.length + 1}`,
@@ -583,6 +594,7 @@ export default function App() {
   };
 
   const handleDeletePage = (index: number) => {
+    if (checkGuestAction()) return;
     if (pages.length <= 1) return;
     const newPages = pages.filter((_, i) => i !== index);
     setPages(newPages);
@@ -592,6 +604,7 @@ export default function App() {
   };
 
   const handleDuplicatePage = (index: number) => {
+    if (checkGuestAction()) return;
     const pageToDuplicate = pages[index];
     if (!pageToDuplicate) return;
 
@@ -615,14 +628,17 @@ export default function App() {
   };
 
   const handleReorderPages = (reordered: InvitationPage[]) => {
+    if (checkGuestAction()) return;
     setPages(reordered);
   };
 
   const handleUpdatePage = (index: number, updates: Partial<InvitationPage>) => {
+    if (checkGuestAction()) return;
     setPages((prev) => prev.map((p, i) => i === index ? { ...p, ...updates } : p));
   };
 
   const handleUpdateSettings = (updates: any) => {
+    if (checkGuestAction()) return;
     // Intercept premium scroll and particle effects for free accounts
     // const isPremiumUser = userProfile?.premium === true;
     const isPremiumUser = true;
@@ -1171,7 +1187,13 @@ export default function App() {
   // --- 5. Element Manipulation Handlers ---
   const generateId = () => Math.random().toString(36).substring(2, 9);
 
+  const handleChangeBackground = (bg: any) => {
+    if (checkGuestAction()) return;
+    setBackground(bg);
+  };
+
   const handleAddImage = (url: string, name: string, overrides?: Partial<InvitationElement>) => {
+    if (checkGuestAction()) return;
     const newImage: InvitationElement = {
       id: `img-${generateId()}`,
       type: 'image',
@@ -1193,6 +1215,7 @@ export default function App() {
   };
 
   const handleAddShape = (shapeType: string, path?: string, isDivider?: boolean) => {
+    if (checkGuestAction()) return;
     const id = generateId();
     let newElement: InvitationElement;
 
@@ -1234,6 +1257,7 @@ export default function App() {
   };
 
   const handleAddText = (config: any) => {
+    if (checkGuestAction()) return;
     const newText: InvitationElement = {
       id: `txt-${generateId()}`,
       type: 'text',
@@ -1250,6 +1274,7 @@ export default function App() {
   };
 
   const handleAddMusicWidget = (audioUrl: string, audioName: string) => {
+    if (checkGuestAction()) return;
     let updated = false;
 
     setPages((prevPages) => 
@@ -1309,6 +1334,7 @@ export default function App() {
     type: 'hero' | 'brideGroom' | 'countdown' | 'story' | 'gallery' | 'video' | 'event' | 'location' | 'rsvp' | 'gift' | 'footer' | 'button',
     presetStyle: 'classic' | 'rustic' | 'emerald' | 'royal' = 'classic'
   ) => {
+    if (checkGuestAction()) return;
     // Intercept premium widgets for free accounts
     // const isPremiumUser = userProfile?.premium === true;
     const isPremiumUser = true;
@@ -1519,12 +1545,14 @@ export default function App() {
   };
 
   const handleUpdateElement = (id: string, updates: Partial<InvitationElement>) => {
+    if (checkGuestAction()) return;
     setElements((prev) =>
       prev.map((el) => (el.id === id ? { ...el, ...updates } : el))
     );
   };
 
   const handleDuplicateElement = (id: string) => {
+    if (checkGuestAction()) return;
     const target = currentElements.find((el) => el.id === id);
     if (!target) return;
 
@@ -1541,6 +1569,7 @@ export default function App() {
   };
 
   const handleCopyElement = (id: string) => {
+    if (checkGuestAction()) return;
     const target = currentElements.find((el) => el.id === id);
     if (target) {
       setCopiedElement(target);
@@ -1548,6 +1577,7 @@ export default function App() {
   };
 
   const handlePasteElement = () => {
+    if (checkGuestAction()) return;
     if (!copiedElement) return;
 
     const clone: InvitationElement = {
@@ -1573,15 +1603,18 @@ export default function App() {
   };
 
   const handleDeleteElement = (id: string) => {
+    if (checkGuestAction()) return;
     setElements((prev) => prev.filter((el) => el.id !== id));
     setSelectedId((prev) => (prev === id ? null : prev));
   };
 
   const handleReorderElements = (reordered: InvitationElement[]) => {
+    if (checkGuestAction()) return;
     setElements(reordered);
   };
 
   const handleUpdateElementAnimation = (elementId: string, animation: InvitationAnimation) => {
+    if (checkGuestAction()) return;
     handleUpdateElement(elementId, { animation });
     triggerAnimationPreview(elementId);
   };
@@ -2020,13 +2053,25 @@ export default function App() {
 
             <div className="text-center space-y-1">
               <div className="w-10 h-10 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mx-auto">
-                <Heart className="w-5 h-5 text-blue-600 fill-blue-100" />
+                {guestAuthReason === 'design' ? (
+                  <Sparkles className="w-5 h-5 text-blue-600 animate-pulse" />
+                ) : (
+                  <Heart className="w-5 h-5 text-blue-600 fill-blue-100" />
+                )}
               </div>
-              <h3 className="text-base font-black text-slate-900 uppercase tracking-tight mt-3">Simpan Desain Anda</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase tracking-tight mt-3">
+                {guestAuthReason === 'design' ? 'Mulai Mendesain Undangan' : 'Simpan Desain Anda'}
+              </h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                {guestAuthMode === 'register'
-                  ? 'Buat akun gratis untuk menyimpan dan mempublikasikan undangan Anda.'
-                  : 'Masuk ke akun Anda untuk menyimpan desain ini.'}
+                {guestAuthReason === 'design' ? (
+                  guestAuthMode === 'register'
+                    ? 'Daftar akun gratis sekarang untuk mulai mendesain dan menyimpan undangan pernikahan digital Anda.'
+                    : 'Masuk ke akun Anda untuk mulai mendesain.'
+                ) : (
+                  guestAuthMode === 'register'
+                    ? 'Buat akun gratis untuk menyimpan dan mempublikasikan undangan Anda.'
+                    : 'Masuk ke akun Anda untuk menyimpan desain ini.'
+                )}
               </p>
             </div>
 
@@ -2087,7 +2132,15 @@ export default function App() {
               >
                 {guestAuthLoading
                   ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : <span>{guestAuthMode === 'register' ? 'Buat Akun & Simpan' : 'Masuk & Simpan'}</span>}
+                  : (
+                    <span>
+                      {guestAuthReason === 'design' ? (
+                        guestAuthMode === 'register' ? 'Daftar & Mulai Desain' : 'Masuk & Mulai Desain'
+                      ) : (
+                        guestAuthMode === 'register' ? 'Buat Akun & Simpan' : 'Masuk & Simpan'
+                      )}
+                    </span>
+                  )}
               </button>
             </form>
 
@@ -2148,7 +2201,7 @@ export default function App() {
         }}
         onExit={isEditingTemplate ? handleExitEditor : (isGuestMode ? undefined : handleExitEditor)}
         isGuestMode={isEditingTemplate ? false : isGuestMode}
-        onGuestSave={() => setShowGuestAuthModal(true)}
+        onGuestSave={() => { setGuestAuthReason('save'); setShowGuestAuthModal(true); }}
         isEditingTemplate={isEditingTemplate}
         customTemplates={customTemplates}
         onOpenPresets={fetchCustomTemplates}
@@ -2174,7 +2227,7 @@ export default function App() {
           selectedId={selectedId}
           background={background}
           onAddImage={handleAddImage}
-          onChangeBackground={setBackground}
+          onChangeBackground={handleChangeBackground}
           onAddShape={handleAddShape}
           onAddText={handleAddText}
           onAddComponent={handleAddComponent}
