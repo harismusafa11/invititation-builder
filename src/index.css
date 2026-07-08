@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Castoro+Titling&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Cormorant+Infant:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&family=Parisienne&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&family=Cormorant+Upright:wght@400;600;700&family=Dancing+Script:wght@400;600;700&family=Herr+Von+Muellerhoff&family=Imperial+Script&family=Italiana&family=Marcellus&family=Mea+Culpa&family=Monsieur+La+Doulaise&family=Oswald:wght@400;600;700&family=Playfair+Display+SC:wght@400;700&family=Petit+Formal+Script&family=Prata&family=Quicksand:wght@400;600;700&family=WindSong:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-cinzel: "Cinzel", serif;
+  --font-cormorant: "Cormorant Garamond", serif;
+  --font-script: "Great Vibes", cursive;
+  --font-alex: "Alex Brush", cursive;
+  
+  /* Premium aesthetic fonts variables */
+  --font-bodoni: "Bodoni Moda", serif;
+  --font-cinzeldec: "Cinzel Decorative", serif;
+  --font-castoro: "Castoro Titling", serif;
+  --font-cormorant-infant: "Cormorant Infant", serif;
+  --font-pinyon: "Pinyon Script", cursive;
+  --font-parisienne: "Parisienne", cursive;
+  --font-allura: "Allura", cursive;
+  --font-sacramento: "Sacramento", cursive;
+}
+
+/* Custom styles for luxury glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark-glass {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Custom continuous element visual effects */
+@keyframes glow-breathing {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px var(--effect-glow-color, rgba(212, 175, 55, 0.4)));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px var(--effect-glow-color, rgba(212, 175, 55, 0.8)));
+  }
+}
+
+.effect-glow {
+  animation: glow-breathing 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse-gentle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.effect-pulse {
+  animation: pulse-gentle 2s infinite ease-in-out;
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.effect-float {
+  animation: float-gentle 3s infinite ease-in-out;
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.effect-spin {
+  animation: spin-slow 12s infinite linear;
+}
+
+/* Hover effects */
+.hover-effect-scale {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s ease;
+}
+.hover-effect-scale:hover {
+  transform: scale(1.05) !important;
+}
+
+.hover-effect-glow {
+  transition: transform 0.25s ease, filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-effect-glow:hover {
+  filter: drop-shadow(0 0 12px var(--effect-glow-color, rgba(212, 175, 55, 0.9))) !important;
+}
+
+.hover-effect-lift {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s ease;
+}
+.hover-effect-lift:hover {
+  transform: translateY(-6px) !important;
+}
+
+/* Studio Global Dark Mode Overrides */
+#invitation-builder-root.dark {
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+#invitation-builder-root.dark header, 
+#invitation-builder-root.dark div#editor-workspace-canvas + div,
+#invitation-builder-root.dark div[class*="bg-white"]:not(.preview-viewport-content *),
+#invitation-builder-root.dark div[class*="bg-slate-50"]:not(.preview-viewport-content *) {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Sidebar Specifics */
+#invitation-builder-root.dark div[class*="bg-slate-50 border-r"]:not(.preview-viewport-content *) {
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* Input & Select Box styling */
+#invitation-builder-root.dark input:not([type="checkbox"]):not([type="radio"]):not(.preview-viewport-content *),
+#invitation-builder-root.dark select:not(.preview-viewport-content *),
+#invitation-builder-root.dark textarea:not(.preview-viewport-content *) {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+#invitation-builder-root.dark input::placeholder {
+  color: #64748b !important;
+}
+
+#invitation-builder-root.dark label:not(.preview-viewport-content *),
+#invitation-builder-root.dark span[class*="text-slate-400"]:not(.preview-viewport-content *),
+#invitation-builder-root.dark span[class*="text-slate-500"]:not(.preview-viewport-content *) {
+  color: #94a3b8 !important;
+}
+
+/* Non-accent Buttons */
+#invitation-builder-root.dark button:not(.preview-viewport-content *):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([id^="tab-button-"]) {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+#invitation-builder-root.dark button:hover:not(.preview-viewport-content *):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([id^="tab-button-"]) {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* Left sidebar vertical buttons */
+#invitation-builder-root.dark button[id^="tab-button-"]:not([class*="bg-blue"]) {
+  color: #94a3b8 !important;
+}
+
+#invitation-builder-root.dark button[id^="tab-button-"]:not([class*="bg-blue"]):hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}

@@ -1,0 +1,20 @@
+# =====================================================
+# ROBOTS.TXT
+#
+# Mengatur akses crawler Google, Bing, dll.
+# =====================================================
+
+User-agent: *
+Allow: /
+
+# Mengizinkan indexing semua halaman publik
+Allow: /v/
+
+# Membatasi folder administratif / internal
+Disallow: /sys-admin/
+Disallow: /super-admin/
+Disallow: /api/
+
+# TODO: Ganti domain berikut setelah website live.
+# Sitemap: https://invitationbuilder.net/sitemap.xml
+Sitemap: https://invitationbuilder.net/sitemap.xml
