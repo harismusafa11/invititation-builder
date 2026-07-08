@@ -735,9 +735,12 @@ async function startServer() {
         items: allItems.rows
       });
     } catch (err: any) {
+      const dbUrl = process.env.DATABASE_URL || "not-set";
+      const maskedUrl = dbUrl.replace(/:([^@]+)@/, ":***@");
       res.status(500).json({
         success: false,
         error: err.message,
+        databaseUrl: maskedUrl,
         stack: err.stack
       });
     }
