@@ -391,6 +391,14 @@ export default function App() {
     // Read session
     supabase.auth.getSession().then(({ data: { session: currentSession } }: any) => {
       handleSession(currentSession);
+      // If ?showLogin=true in URL, auto-open the login modal for guests
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('showLogin') === 'true' && !currentSession) {
+        setShowGuestAuthModal(true);
+        setGuestAuthMode('login');
+        // Clean the URL
+        window.history.replaceState({}, '', '/');
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event: string, newSession: any) => {
@@ -404,6 +412,7 @@ export default function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
 
   // --- 2. Core Editor Canvas State ---
   // Load a demo template for guest mode so users immediately see a beautiful invitation
@@ -1975,7 +1984,34 @@ export default function App() {
     );
   }
 
+  // C.2 GUEST PUBLIC LANDING — show template catalog for guests with no active project
+  // Guests can browse and pick a template freely; login is only triggered on save.
+  // Skip landing if ?newProject=true (guest already selected a template) or ?showLogin=true
+  const _urlParams = new URLSearchParams(window.location.search);
+  const _isNewProject = _urlParams.get('newProject') === 'true';
+  const _isShowLogin = _urlParams.get('showLogin') === 'true';
+  if (isGuestMode && activeProjectId === null && !authLoading && !_isNewProject && !_isShowLogin) {
+    return (
+      <>
+        <TemplatesCatalog
+          onBack={() => {
+            // "Start from scratch" → open canvas editor with blank template
+            window.location.href = '/?newProject=true&template=blank';
+          }}
+          onSelectTemplate={(key) => {
+            window.location.href = `/?newProject=true&template=${key}`;
+          }}
+          customTemplates={customTemplates}
+          isGuestLanding={true}
+        />
+        <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
+      </>
+    );
+  }
+
+
   // D. FULL CANVAS WORKSPACE EDITOR (guest mode OR logged in with active project)
+
   return (
     <div className={`h-screen bg-slate-50 flex flex-col font-sans select-none overflow-hidden transition-all duration-300 ${editorTheme === 'dark' ? 'dark bg-slate-950' : ''}`} id="invitation-builder-root">
 

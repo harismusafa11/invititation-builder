@@ -1,13 +1,14 @@
 import React from 'react';
-import { ArrowLeft, Wand2, Sparkles, Heart, CheckCircle2, ChevronRight, Smartphone } from 'lucide-react';
+import { ArrowLeft, Wand2, Sparkles, Heart, CheckCircle2, ChevronRight, Smartphone, LogIn } from 'lucide-react';
 
 interface TemplatesCatalogProps {
   onBack: () => void;
   onSelectTemplate: (key: string) => void;
   customTemplates?: any[];
+  isGuestLanding?: boolean;
 }
 
-export default function TemplatesCatalog({ onBack, onSelectTemplate, customTemplates = [] }: TemplatesCatalogProps) {
+export default function TemplatesCatalog({ onBack, onSelectTemplate, customTemplates = [], isGuestLanding = false }: TemplatesCatalogProps) {
   const handlePreviewDemo = (tplSlug: string) => {
     if (tplSlug) {
       window.open(`/v/${tplSlug}`, '_blank');
@@ -37,12 +38,37 @@ export default function TemplatesCatalog({ onBack, onSelectTemplate, customTempl
           onClick={onBack}
           className="flex items-center space-x-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer bg-transparent border-0"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Studio</span>
+          {isGuestLanding ? (
+            <>
+              <Wand2 className="w-4 h-4" />
+              <span>Mulai dari Nol</span>
+            </>
+          ) : (
+            <>
+              <ArrowLeft className="w-4 h-4" />
+              <span>Kembali ke Studio</span>
+            </>
+          )}
         </button>
-        <div className="flex items-center space-x-1">
-          <span className="text-xs font-black tracking-widest text-slate-400">InviteStudio</span>
-          <span className="text-xs font-bold text-amber-500 font-serif">Katalog</span>
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1">
+            <span className="text-xs font-black tracking-widest text-slate-400">InviteStudio</span>
+            <span className="text-xs font-bold text-amber-500 font-serif">Katalog</span>
+          </div>
+          {isGuestLanding && (
+            <a
+              href="/?login=true"
+              className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                // Trigger login by navigating to canvas which shows the guest auth modal
+                window.location.href = '/?showLogin=true';
+              }}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Masuk</span>
+            </a>
+          )}
         </div>
       </header>
 

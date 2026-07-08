@@ -24,10 +24,17 @@ function getPool(): pg.Pool {
   }
 
   console.log(`[Database] Initializing connection pool using target URL...`);
+  // On Vercel (serverless), append pgbouncer=true so the pooler
+  // uses transaction mode, which supports unlimited concurrent connections.
+  if (process.env.VERCEL && !dbUrl.includes('pgbouncer')) {
+    dbUrl += (dbUrl.includes('?') ? '&' : '?') + 'pgbouncer=true';
+  }
+
   pool = new Pool({
     connectionString: dbUrl,
-    max: process.env.VERCEL ? 1 : 10, // Limit to 1 connection per serverless function to prevent Supabase connection exhaustion
-    idleTimeoutMillis: 10000, // Close idle connections after 10 seconds
+    // On Vercel, use max:2 — 1 for the API query + headroom for concurrent requests
+    max: process.env.VERCEL ? 2 : 10,
+    idleTimeoutMillis: 5000, // Aggressively close idle connections on serverless
     connectionTimeoutMillis: 5000,
     ssl: { rejectUnauthorized: false }
   });
@@ -710,7 +717,14 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-  initializeDatabase();
+  // On Vercel, skip schema initialization on every serverless cold-start.
+  // Tables are already created; running CREATE TABLE IF NOT EXISTS on every request
+  // exhausts the Supabase session pooler connection limit (max 15).
+  if (!process.env.VERCEL) {
+    initializeDatabase();
+  } else {
+    console.log("[Database] Vercel mode: skipping schema init, using existing Supabase tables.");
+  }
 
   // --- API Routes ---
   
