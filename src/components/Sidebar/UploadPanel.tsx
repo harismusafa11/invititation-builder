@@ -334,6 +334,7 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
                     className="w-10 h-10 object-contain drop-shadow-sm group-hover:rotate-6 transition-all"
                     alt={asset.name}
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                   <span className="text-[8px] text-slate-500 font-bold text-center truncate max-w-full block mt-1.5 px-0.5">
                     {asset.name}
@@ -400,7 +401,7 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
                   title={isLocked ? `Premium - ${asset.name}` : `Tambah ${asset.name} ke canvas`}
                 >
                   <div className="relative w-full h-24 rounded-lg overflow-hidden bg-slate-50 flex items-center justify-center">
-                    <img src={asset.url} alt={asset.name} className="w-full h-full object-contain p-1" referrerPolicy="no-referrer" />
+                    <img src={asset.url} alt={asset.name} className="w-full h-full object-contain p-1" referrerPolicy="no-referrer" loading="lazy" />
 
                     {isLocked ? (
                       <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center text-white z-10">

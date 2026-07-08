@@ -12,8 +12,26 @@ loadEnv();
 const { Pool } = pg;
 const PORT = 3000;
 
-// Lazy initialized database pool
 let pool: pg.Pool | null = null;
+
+// In-memory cache for high performance
+let cachedAssets: any[] | null = null;
+let assetsLastFetched = 0;
+let cachedTemplates: any[] | null = null;
+let templatesLastFetched = 0;
+
+function clearAssetsCache() {
+  console.log("[Cache] Invaliding assets cache.");
+  cachedAssets = null;
+  assetsLastFetched = 0;
+}
+
+function clearTemplatesCache() {
+  console.log("[Cache] Invaliding templates cache.");
+  cachedTemplates = null;
+  templatesLastFetched = 0;
+}
+
 
 function getPool(): pg.Pool {
   if (pool) return pool;
@@ -832,10 +850,20 @@ async function startServer() {
   app.get("/api/templates", async (req, res) => {
     try {
       res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      
+      const now = Date.now();
+      if (cachedTemplates && (now - templatesLastFetched < 30000)) { // 30 seconds cache
+        return res.json({ success: true, data: cachedTemplates });
+      }
+
       const result = await dbQuery(
         "SELECT id, title, slug, thumbnail, updated_at FROM invitations WHERE is_template = TRUE ORDER BY updated_at DESC"
       );
-      return res.json({ success: true, data: result.rows });
+      
+      cachedTemplates = result.rows;
+      templatesLastFetched = now;
+
+      return res.json({ success: true, data: cachedTemplates });
     } catch (error: any) {
       console.error("[API] Error loading templates:", error);
       return res.status(500).json({ success: false, error: error.message });
@@ -997,6 +1025,7 @@ async function startServer() {
         ]
       );
       if (resolvedIsTemplate) {
+        clearTemplatesCache();
         const checkFeature = await dbQuery("SELECT 1 FROM platform_features_config WHERE feature_id = $1", [id]);
         if (checkFeature.rows.length === 0) {
           if (useLocalFallback) {
@@ -1946,10 +1975,19 @@ async function startServer() {
   // --- Assets API Routes ---
   app.get("/api/assets", async (req, res) => {
     try {
-      // Cache assets aggressively — they rarely change and are large
       res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+      
+      const now = Date.now();
+      if (cachedAssets && (now - assetsLastFetched < 300000)) { // 5 minutes cache
+        return res.json({ success: true, data: cachedAssets });
+      }
+
       const result = await dbQuery("SELECT id, name, url, category, premium FROM assets_library ORDER BY category, name");
-      return res.json({ success: true, data: result.rows });
+      
+      cachedAssets = result.rows;
+      assetsLastFetched = now;
+
+      return res.json({ success: true, data: cachedAssets });
     } catch (error: any) {
       console.error("[API] Get assets error:", error);
       return res.status(500).json({ success: false, error: error.message });
@@ -1968,6 +2006,7 @@ async function startServer() {
         "INSERT INTO assets_library (id, name, url, category, premium) VALUES ($1, $2, $3, $4, $5)",
         [id, name, url, category, isPremium]
       );
+      clearAssetsCache();
       return res.json({ success: true, data: { id, name, url, category, premium: isPremium } });
     } catch (error: any) {
       console.error("[API] Add asset error:", error);
@@ -1978,6 +2017,7 @@ async function startServer() {
   app.delete("/api/assets/:id", async (req, res) => {
     try {
       await dbQuery("DELETE FROM assets_library WHERE id = $1", [req.params.id]);
+      clearAssetsCache();
       return res.json({ success: true, message: "Asset deleted" });
     } catch (error: any) {
       console.error("[API] Delete asset error:", error);
@@ -1990,6 +2030,7 @@ async function startServer() {
       const { premium } = req.body;
       const isPremium = premium === true || premium === "true";
       await dbQuery("UPDATE assets_library SET premium = $1 WHERE id = $2", [isPremium, req.params.id]);
+      clearAssetsCache();
       return res.json({ success: true, message: "Asset premium status updated" });
     } catch (error: any) {
       console.error("[API] Update asset premium status error:", error);
