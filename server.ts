@@ -1990,16 +1990,46 @@ async function startServer() {
       res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
-      if (cachedAssets && (now - assetsLastFetched < 300000)) { // 5 minutes cache
-        return res.json({ success: true, data: cachedAssets });
+      if (!cachedAssets || (now - assetsLastFetched >= 300000)) { // 5 minutes cache TTL
+        const result = await dbQuery("SELECT id, name, url, category, premium FROM assets_library ORDER BY category, name");
+        cachedAssets = result.rows;
+        assetsLastFetched = now;
       }
 
-      const result = await dbQuery("SELECT id, name, url, category, premium FROM assets_library ORDER BY category, name");
-      
-      cachedAssets = result.rows;
-      assetsLastFetched = now;
+      let assets = cachedAssets || [];
 
-      return res.json({ success: true, data: cachedAssets });
+      // Filter by category if requested
+      const category = req.query.category as string;
+      if (category) {
+        assets = assets.filter(a => a.category === category);
+      }
+
+      // Filter by search query if requested
+      const search = req.query.search as string;
+      if (search) {
+        const s = search.toLowerCase();
+        assets = assets.filter(a => a.name && a.name.toLowerCase().includes(s));
+      }
+
+      // Check if pagination is requested
+      if (req.query.page) {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 30;
+        const offset = (page - 1) * limit;
+        
+        const paginated = assets.slice(offset, offset + limit);
+        const hasMore = offset + limit < assets.length;
+
+        return res.json({
+          success: true,
+          data: paginated,
+          hasMore,
+          total: assets.length
+        });
+      }
+
+      // Default (no page parameter): return all filtered items
+      return res.json({ success: true, data: assets });
     } catch (error: any) {
       console.error("[API] Get assets error:", error);
       return res.status(500).json({ success: false, error: error.message });

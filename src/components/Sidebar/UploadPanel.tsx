@@ -65,23 +65,69 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
   const [globalTab, setGlobalTab] = useState<'uploads' | 'premium' | 'frames'>('premium');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [customAssets, setCustomAssets] = useState<{ id: string; name: string; url: string; category: string; premium?: boolean }[]>([]);
+  const [assets, setAssets] = useState<{ id: string; name: string; url: string; category: string; premium?: boolean }[]>([]);
   const [assetsLoading, setAssetsLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+
+  const currentCategory = globalTab === 'frames' ? 'frames' : activeTab;
 
   useEffect(() => {
+    setAssets([]);
+    setPage(1);
+    setHasMore(false);
     setAssetsLoading(true);
-    fetch('/api/assets')
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const timer = setTimeout(() => {
+      const fetchUrl = `/api/assets?page=1&limit=30&category=${currentCategory}&search=${encodeURIComponent(searchQuery)}`;
+      fetch(fetchUrl, { signal })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success && Array.isArray(result.data)) {
+            setAssets(result.data);
+            setHasMore(result.hasMore || false);
+          }
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            console.error('Failed to load assets:', err);
+          }
+        })
+        .finally(() => {
+          setAssetsLoading(false);
+        });
+    }, searchQuery ? 300 : 0);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [currentCategory, searchQuery]);
+
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const fetchUrl = `/api/assets?page=${nextPage}&limit=30&category=${currentCategory}&search=${encodeURIComponent(searchQuery)}`;
+
+    fetch(fetchUrl)
       .then(res => res.json())
       .then(result => {
         if (result.success && Array.isArray(result.data)) {
-          setCustomAssets(result.data);
+          setAssets(prev => [...prev, ...result.data]);
+          setPage(nextPage);
+          setHasMore(result.hasMore || false);
         }
       })
-      .catch(err => console.error('Failed to load custom assets:', err))
+      .catch(err => console.error('Failed to load more assets:', err))
       .finally(() => {
-        setAssetsLoading(false);
+        setLoadingMore(false);
       });
-  }, []);
+  };
 
   const handleSetBackground = (url: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -155,13 +201,7 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
     setUploadedImages((prev) => prev.filter((img) => img.id !== id));
   };
 
-  const allPremiumFiltered = customAssets
-    .filter(asset => asset.category === activeTab)
-    .filter(asset => !searchQuery || asset.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const allFramesFiltered = customAssets
-    .filter(asset => asset.category === 'frames')
-    .filter(asset => !searchQuery || asset.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  // category definitions moved to top useEffect hook
 
   return (
     <div className="space-y-5">
@@ -327,7 +367,7 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
                 </div>
               ))
             ) : (
-              allPremiumFiltered.map((asset, idx) => {
+              assets.map((asset, idx) => {
                 const isLocked = asset.premium && !isPremium;
                 return (
                   <div
@@ -370,10 +410,27 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
               })
             )}
 
-            {allPremiumFiltered.length === 0 && (
+            {!assetsLoading && assets.length === 0 && (
               <div className="col-span-3 text-center py-8 text-slate-400 text-[10px] font-semibold">
                 Ilustrasi tidak ditemukan.
               </div>
+            )}
+
+            {hasMore && (
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="col-span-3 mt-3 py-2 bg-slate-50 hover:bg-blue-50 text-blue-600 hover:text-blue-700 text-[9px] font-bold rounded-xl transition-all border border-slate-200/40 disabled:opacity-50 flex items-center justify-center gap-1 shadow-sm active:scale-[0.98]"
+              >
+                {loadingMore ? (
+                  <>
+                    <span className="w-2.5 h-2.5 border border-blue-600 border-t-transparent rounded-full animate-spin"></span>
+                    Memuat...
+                  </>
+                ) : (
+                  <>Muat Lebih Banyak ✨</>
+                )}
+              </button>
             )}
           </div>
         </div>
@@ -407,7 +464,7 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
                 </div>
               ))
             ) : (
-              allFramesFiltered.map((asset, idx) => {
+              assets.map((asset, idx) => {
                 const isLocked = asset.premium && !isPremium;
                 return (
                   <div
@@ -447,10 +504,27 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
               })
             )}
 
-            {allFramesFiltered.length === 0 && (
+            {!assetsLoading && assets.length === 0 && (
               <div className="col-span-2 text-center py-8 text-slate-400 text-[10px] font-semibold">
                 Bingkai tidak ditemukan.
               </div>
+            )}
+
+            {hasMore && (
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="col-span-2 mt-3 py-2 bg-slate-50 hover:bg-blue-50 text-blue-600 hover:text-blue-700 text-[9px] font-bold rounded-xl transition-all border border-slate-200/40 disabled:opacity-50 flex items-center justify-center gap-1 shadow-sm active:scale-[0.98]"
+              >
+                {loadingMore ? (
+                  <>
+                    <span className="w-2.5 h-2.5 border border-blue-600 border-t-transparent rounded-full animate-spin"></span>
+                    Memuat...
+                  </>
+                ) : (
+                  <>Muat Lebih Banyak ✨</>
+                )}
+              </button>
             )}
           </div>
         </div>
