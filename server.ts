@@ -1,6 +1,5 @@
 import express from "express";
 import pg from "pg";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
@@ -2418,6 +2417,7 @@ async function startServer() {
   // --- Front-end Integration (Vite Middleware) ---
   if (process.env.NODE_ENV !== "production") {
     console.log("[Server] Mounting Vite developer middleware...");
+    const { createServer: createViteServer } = await import("vite");
     vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
