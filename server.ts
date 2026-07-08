@@ -19,6 +19,8 @@ let cachedAssets: any[] | null = null;
 let assetsLastFetched = 0;
 let cachedTemplates: any[] | null = null;
 let templatesLastFetched = 0;
+let cachedFeatures: any[] | null = null;
+let featuresLastFetched = 0;
 
 function clearAssetsCache() {
   console.log("[Cache] Invaliding assets cache.");
@@ -30,6 +32,12 @@ function clearTemplatesCache() {
   console.log("[Cache] Invaliding templates cache.");
   cachedTemplates = null;
   templatesLastFetched = 0;
+}
+
+function clearFeaturesCache() {
+  console.log("[Cache] Invaliding features cache.");
+  cachedFeatures = null;
+  featuresLastFetched = 0;
 }
 
 
@@ -849,7 +857,8 @@ async function startServer() {
   // that cause connection timeouts. The full data is loaded only when editing.
   app.get("/api/templates", async (req, res) => {
     try {
-      res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
+      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
       if (cachedTemplates && (now - templatesLastFetched < 30000)) { // 30 seconds cache
@@ -1975,7 +1984,8 @@ async function startServer() {
   // --- Assets API Routes ---
   app.get("/api/assets", async (req, res) => {
     try {
-      res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+      // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
+      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
       
       const now = Date.now();
       if (cachedAssets && (now - assetsLastFetched < 300000)) { // 5 minutes cache
@@ -2053,8 +2063,20 @@ async function startServer() {
   // --- Platform Features Config API Routes ---
   app.get("/api/features-config", async (req, res) => {
     try {
+      // s-maxage=86400 enables Vercel Edge CDN caching for 24 hours
+      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=600');
+      
+      const now = Date.now();
+      if (cachedFeatures && (now - featuresLastFetched < 300000)) { // 5 minutes cache
+        return res.json({ success: true, data: cachedFeatures });
+      }
+
       const result = await dbQuery("SELECT feature_id, feature_type, name, is_premium FROM platform_features_config");
-      return res.json({ success: true, data: result.rows });
+      
+      cachedFeatures = result.rows;
+      featuresLastFetched = now;
+
+      return res.json({ success: true, data: cachedFeatures });
     } catch (error: any) {
       console.error("[API] Get features config error:", error);
       return res.status(500).json({ success: false, error: error.message });
@@ -2066,6 +2088,7 @@ async function startServer() {
       const { is_premium } = req.body;
       const isPremium = is_premium === true || is_premium === "true";
       await dbQuery("UPDATE platform_features_config SET is_premium = $1 WHERE feature_id = $2", [isPremium, req.params.id]);
+      clearFeaturesCache();
       return res.json({ success: true, message: "Feature config updated" });
     } catch (error: any) {
       console.error("[API] Update feature config error:", error);
