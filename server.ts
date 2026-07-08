@@ -145,22 +145,28 @@ function isPremiumActive(premium: boolean, premiumUntil: string | Date | null): 
 
 // Safe query runner wrapper with automatic fallback
 async function dbQuery(text: string, params: any[] = []): Promise<{ rows: any[] }> {
-  if (useLocalFallback) {
+  if (useLocalFallback && !process.env.VERCEL) {
     return runLocalQuery(text, params);
   }
 
   try {
     const dbPool = getPool();
+    // On Vercel, allow longer execution time to handle cold-start wakeup
     const queryPromise = dbPool.query(text, params);
+    const timeoutDuration = process.env.VERCEL ? 15000 : 5000;
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Query connection timeout")), 2000)
+      setTimeout(() => reject(new Error("Query connection timeout")), timeoutDuration)
     );
     const result = await Promise.race([queryPromise, timeoutPromise]) as { rows: any[] };
     return result;
   } catch (err: any) {
-    console.warn(`[Database] Query failed. Falling back to local file-based JSON DB. Error: ${err.message || err}`);
-    useLocalFallback = true;
-    return runLocalQuery(text, params);
+    console.error("[Database] Query error:", err.message || err);
+    if (!process.env.VERCEL) {
+      console.log("[Database] Falling back to local JSON db");
+      useLocalFallback = true;
+      return runLocalQuery(text, params);
+    }
+    throw err;
   }
 }
 
@@ -497,10 +503,11 @@ async function initializeDatabase() {
   console.log("[Database] Checking schema existence...");
   try {
     const dbPool = getPool();
-    // Test connection health first with a 2-second timeout to prevent TCP hanging
+    // Test connection health first with a timeout to prevent TCP hanging
     const connectionTest = dbPool.query("SELECT 1");
+    const timeoutDuration = process.env.VERCEL ? 15000 : 3000;
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Database connection timeout")), 2000)
+      setTimeout(() => reject(new Error("Database connection timeout")), timeoutDuration)
     );
     await Promise.race([connectionTest, timeout]);
     
