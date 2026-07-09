@@ -109,6 +109,7 @@ export default function App() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  const [isTemplateLoading, setIsTemplateLoading] = useState(false);
 
   // Platform features configurations loaded from database
   const [featuresConfig, setFeaturesConfig] = useState<any[]>([]);
