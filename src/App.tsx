@@ -2458,9 +2458,8 @@ export default function App() {
             </div>
 
             <div className="overflow-y-auto flex-1 pr-1 space-y-4 py-1">
-              {/* Built-in Presets */}
               <div className="space-y-2">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Premium Bawaan</span>
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Undangan Digital</span>
                 <div className="grid grid-cols-2 gap-2.5">
                   {Object.keys(DEFAULT_TEMPLATES)
                     .filter((key) => {
@@ -2491,37 +2490,29 @@ export default function App() {
                         </button>
                       );
                     })}
+
+                  {customTemplates
+                    .filter((t: any) => !t.id.startsWith('builtin-'))
+                    .map((t: any) => (
+                      <button
+                        key={t.id}
+                        onClick={() => {
+                          loadTemplatePreset(t.id);
+                          setShowMobileTemplatesModal(false);
+                        }}
+                        className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer border-0 p-0"
+                      >
+                        <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
+                          <img src={t.thumbnail || '/templates/placeholder.png'} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
+                        </div>
+                        <div className="p-2 border-t border-slate-100 bg-white w-full">
+                          <span className="text-[10px] font-bold text-slate-700 truncate block">{t.title}</span>
+                        </div>
+                      </button>
+                    ))}
                 </div>
               </div>
-
-              {/* Custom Templates from DB */}
-              {customTemplates.filter((t: any) => !t.id.startsWith('builtin-')).length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Desain Kustom Anda</span>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {customTemplates
-                      .filter((t: any) => !t.id.startsWith('builtin-'))
-                      .map((t: any) => (
-                        <button
-                          key={t.id}
-                          onClick={() => {
-                            loadTemplatePreset(t.id);
-                            setShowMobileTemplatesModal(false);
-                          }}
-                          className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer border-0 p-0"
-                        >
-                          <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
-                            <img src={t.thumbnail || '/templates/placeholder.png'} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
-                          </div>
-                          <div className="p-2 border-t border-slate-100 bg-white w-full">
-                            <span className="text-[10px] font-bold text-slate-700 truncate block">{t.title}</span>
-                          </div>
-                        </button>
-                      ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
