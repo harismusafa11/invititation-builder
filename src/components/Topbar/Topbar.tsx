@@ -489,7 +489,7 @@ export default function Topbar({
         </button>
 
         {/* Templates Presets Dropdown */}
-        <div className="hidden md:block relative">
+        <div className="relative">
           <button
             id="btn-presets"
             onClick={() => {
@@ -498,10 +498,11 @@ export default function Topbar({
               }
               setShowPresets(!showPresets);
             }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-sans font-semibold rounded-lg transition-all shadow-xs cursor-pointer"
+            className="flex items-center space-x-1 md:space-x-1.5 px-2.5 md:px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-sans font-semibold rounded-lg transition-all shadow-xs cursor-pointer"
+            title="Pilih Template Desain"
           >
             <FolderOpen className="w-3.5 h-3.5" />
-            <span>Templates</span>
+            <span className="hidden md:inline">Templates</span>
           </button>
 
           {showPresets && (
