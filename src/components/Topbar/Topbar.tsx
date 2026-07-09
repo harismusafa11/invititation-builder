@@ -544,7 +544,7 @@ export default function Topbar({
                     }}
                     className="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-all flex items-center space-x-2 cursor-pointer"
                   >
-                    <Wand2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                    <Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                     <span className="font-semibold truncate">{t.title}</span>
                   </button>
                 ))}

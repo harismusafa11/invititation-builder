@@ -716,7 +716,7 @@ export default function App() {
 
   const loadTemplatePreset = async (templateKey: string) => {
     // Refresh lightweight templates list (id, title, slug, thumbnail only)
-    const latestTemplates = await fetchCustomTemplates();
+    const latestTemplates = await fetchCustomTemplates() || [];
 
     // Priority 1: Check if there's an admin-edited version of a built-in template in DB
     const builtinDbId = `builtin-${templateKey}`;
