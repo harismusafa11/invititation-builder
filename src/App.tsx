@@ -841,7 +841,7 @@ export default function App() {
 
     try {
       // Refresh templates list first to ensure we use the latest admin edits
-      const latestTemplates = await fetchCustomTemplates();
+      const latestTemplates = await fetchCustomTemplates() || [];
 
       if (templateKey && templateKey !== 'blank') {
         // Priority 1: Check if there's an admin-edited version of a built-in template in DB
@@ -850,15 +850,24 @@ export default function App() {
         let rawTemplate: InvitationTemplate | undefined;
 
         if (foundBuiltinDb) {
-          // Use the admin-edited DB version (takes priority over static code)
-          rawTemplate = {
-            name: foundBuiltinDb.title,
-            background: foundBuiltinDb.background,
-            settings: foundBuiltinDb.settings,
-            pages: foundBuiltinDb.pages
-          };
-          console.log(`[Create Project] Using admin-edited DB version of template '${templateKey}'`);
-        } else {
+          try {
+            const res = await fetch(`/api/templates/${builtinDbId}`);
+            const result = await res.json();
+            if (result.success && result.data) {
+              rawTemplate = {
+                name: result.data.title,
+                background: result.data.background,
+                settings: result.data.settings,
+                pages: result.data.pages
+              };
+              console.log(`[Create Project] Loaded admin-edited version of template '${templateKey}'`);
+            }
+          } catch (err) {
+            console.error(`[Create Project] Failed to fetch full template data for ${builtinDbId}:`, err);
+          }
+        }
+
+        if (!rawTemplate) {
           // Priority 2: Check static DEFAULT_TEMPLATES in code
           rawTemplate = DEFAULT_TEMPLATES[templateKey] as InvitationTemplate | undefined;
           if (rawTemplate) {
@@ -870,13 +879,21 @@ export default function App() {
           // Priority 3: Check user-created custom templates from DB
           const foundCustom = latestTemplates.find(t => t.id === templateKey);
           if (foundCustom) {
-            rawTemplate = {
-              name: foundCustom.title,
-              background: foundCustom.background,
-              settings: foundCustom.settings,
-              pages: foundCustom.pages
-            };
-            console.log(`[Create Project] Using custom template '${templateKey}' from DB`);
+            try {
+              const res = await fetch(`/api/templates/${templateKey}`);
+              const result = await res.json();
+              if (result.success && result.data) {
+                rawTemplate = {
+                  name: result.data.title,
+                  background: result.data.background,
+                  settings: result.data.settings,
+                  pages: result.data.pages
+                };
+                console.log(`[Create Project] Loaded custom template '${templateKey}' from DB`);
+              }
+            } catch (err) {
+              console.error(`[Create Project] Failed to fetch full custom template data for ${templateKey}:`, err);
+            }
           }
         }
 
