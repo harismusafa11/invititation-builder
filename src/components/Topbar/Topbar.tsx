@@ -105,6 +105,7 @@ export default function Topbar({
 }: TopbarProps) {
   const [showPresets, setShowPresets] = useState(false);
   const [showMobileTools, setShowMobileTools] = useState(false);
+  const [showMobileTemplatesModal, setShowMobileTemplatesModal] = useState(false);
 
   return (
     <header className="h-14 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-50 select-none gap-2">
@@ -345,6 +346,21 @@ export default function Topbar({
 
                 <div className="mx-4 my-1 h-[1px] bg-slate-100" />
 
+                {/* Templates (Mobile Option) */}
+                <button
+                  onClick={() => {
+                    setShowMobileTemplatesModal(true);
+                    setShowMobileTools(false);
+                    onOpenPresets?.();
+                  }}
+                  className="w-full flex items-center space-x-2.5 px-4 py-2.5 text-slate-700 hover:bg-slate-50 transition-all text-left"
+                >
+                  <FolderOpen className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span className="text-xs font-semibold">Pilih Template Undangan</span>
+                </button>
+
+                <div className="mx-4 my-1 h-[1px] bg-slate-100" />
+
                 {/* Delete / Clear */}
                 <button
                   onClick={() => { onClear(); setShowMobileTools(false); }}
@@ -489,7 +505,7 @@ export default function Topbar({
         </button>
 
         {/* Templates Presets Dropdown */}
-        <div className="relative">
+        <div className="hidden md:block relative">
           <button
             id="btn-presets"
             onClick={() => {
@@ -498,11 +514,10 @@ export default function Topbar({
               }
               setShowPresets(!showPresets);
             }}
-            className="flex items-center space-x-1 md:space-x-1.5 px-2.5 md:px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-sans font-semibold rounded-lg transition-all shadow-xs cursor-pointer"
-            title="Pilih Template Desain"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-sans font-semibold rounded-lg transition-all shadow-xs cursor-pointer"
           >
             <FolderOpen className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Templates</span>
+            <span>Templates</span>
           </button>
 
           {showPresets && (
@@ -617,6 +632,92 @@ export default function Topbar({
           <span className="hidden sm:inline">Preview</span>
         </button>
       </div>
+      {/* Mobile Templates Visual Grid Modal */}
+      {showMobileTemplatesModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl border border-slate-100 space-y-4 animate-in zoom-in-95 duration-200 max-h-[80vh] flex flex-col">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Pilih Template</h3>
+              </div>
+              <button 
+                onClick={() => setShowMobileTemplatesModal(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4 rotate-45" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 pr-1 space-y-4 py-1">
+              {/* Built-in Presets */}
+              <div className="space-y-2">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Premium Bawaan</span>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {Object.keys(DEFAULT_TEMPLATES)
+                    .filter((key) => {
+                      const builtinDbId = `builtin-${key}`;
+                      return customTemplates.length === 0 || customTemplates.some(t => t.id === builtinDbId);
+                    })
+                    .map((key) => {
+                      const builtinDbId = `builtin-${key}`;
+                      const foundBuiltinDb = customTemplates.find(t => t.id === builtinDbId);
+                      const displayName = foundBuiltinDb ? foundBuiltinDb.title : DEFAULT_TEMPLATES[key].name;
+                      const thumbnail = foundBuiltinDb?.thumbnail || DEFAULT_TEMPLATES[key].thumbnail || '/templates/placeholder.png';
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => {
+                            onLoadTemplate(key);
+                            setShowMobileTemplatesModal(false);
+                          }}
+                          className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer"
+                        >
+                          <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
+                            <img src={thumbnail} alt={displayName} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                          <div className="p-2 border-t border-slate-100 bg-white">
+                            <span className="text-[10px] font-bold text-slate-700 truncate block">{displayName}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+
+              {/* Custom Templates from DB */}
+              {customTemplates.filter((t: any) => !t.id.startsWith('builtin-')).length > 0 && (
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Desain Kustom Anda</span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {customTemplates
+                      .filter((t: any) => !t.id.startsWith('builtin-'))
+                      .map((t: any) => (
+                        <button
+                          key={t.id}
+                          onClick={() => {
+                            onLoadTemplate(t.id);
+                            setShowMobileTemplatesModal(false);
+                          }}
+                          className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer"
+                        >
+                          <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
+                            <img src={t.thumbnail || '/templates/placeholder.png'} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                          <div className="p-2 border-t border-slate-100 bg-white">
+                            <span className="text-[10px] font-bold text-slate-700 truncate block">{t.title}</span>
+                          </div>
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
