@@ -976,6 +976,31 @@ export default function App() {
     }
   };
 
+  // Auto-detect template creation parameters in URL (e.g. ?newProject=true&template=luxuryGold)
+  useEffect(() => {
+    if (authLoading) return; // Wait until session state is determined
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('newProject') === 'true') {
+      const templateKey = urlParams.get('template') || 'premiumIndonesianFloral';
+      
+      if (session) {
+        // Logged in: auto create project in DB
+        const templateName = (DEFAULT_TEMPLATES as any)[templateKey]?.name || 'Undangan';
+        const cleanSlug = `undangan-${Math.random().toString(36).substring(2, 8)}`;
+        
+        // Clean URL first to avoid duplicate calls on re-renders
+        window.history.replaceState({}, '', '/');
+        
+        handleCreateNewProject(`Undangan ${templateName}`, cleanSlug, templateKey);
+      } else {
+        // Guest mode: since they are not logged in, they are already on the editor canvas with the template preloaded by getInitialTemplateKey()!
+        // We just need to clean the URL query params so the URL looks clean
+        window.history.replaceState({}, '', '/');
+      }
+    }
+  }, [authLoading, session]);
+
   const handleUpgradeAccount = async () => {
     if (isGuestMode) {
       alert("Harap login atau daftarkan akun terlebih dahulu untuk melakukan upgrade premium!");
