@@ -1018,6 +1018,32 @@ export default function App() {
     }
   }, [authLoading, session]);
 
+  const handleSelectTemplateFromCatalog = async (key: string) => {
+    setIsTemplatesRoute(false);
+    setIsBlogRoute(false);
+    window.history.pushState({}, '', '/');
+    
+    setIsTemplateLoading(true);
+    try {
+      if (session) {
+        // Logged in: auto create project in DB
+        const templateName = (DEFAULT_TEMPLATES as any)[key]?.name || 'Undangan';
+        const cleanSlug = `undangan-${Math.random().toString(36).substring(2, 8)}`;
+        await handleCreateNewProject(`Undangan ${templateName}`, cleanSlug, key);
+      } else {
+        // Guest mode: load template directly in editor
+        await loadTemplatePreset(key);
+      }
+    } catch (err) {
+      console.error("Failed to select template:", err);
+    } finally {
+      // Small timeout to allow transition to settle before closing loader
+      setTimeout(() => {
+        setIsTemplateLoading(false);
+      }, 450);
+    }
+  };
+
   const handleUpgradeAccount = async () => {
     if (isGuestMode) {
       alert("Harap login atau daftarkan akun terlebih dahulu untuk melakukan upgrade premium!");
@@ -1823,11 +1849,7 @@ export default function App() {
             setIsTemplatesRoute(false);
             window.history.pushState({}, '', '/');
           }}
-          onSelectTemplate={(key) => {
-            setIsTemplatesRoute(false);
-            window.history.pushState({}, '', `/?newProject=true&template=${key}`);
-            window.location.reload();
-          }}
+          onSelectTemplate={handleSelectTemplateFromCatalog}
           customTemplates={customTemplates}
         />
         <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
@@ -1844,11 +1866,7 @@ export default function App() {
             setIsBlogRoute(false);
             window.history.pushState({}, '', '/');
           }}
-          onSelectTemplate={(key) => {
-            setIsBlogRoute(false);
-            window.history.pushState({}, '', `/?newProject=true&template=${key}`);
-            window.location.reload();
-          }}
+          onSelectTemplate={handleSelectTemplateFromCatalog}
         />
         <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
       </>
@@ -1972,6 +1990,25 @@ export default function App() {
   }
 
 
+
+  if (isTemplateLoading) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-[#090d15] flex flex-col items-center justify-center space-y-5 animate-in fade-in duration-300">
+        <div className="relative flex items-center justify-center">
+          {/* Spinning luxury outer ring */}
+          <div className="w-16 h-16 border-2 border-amber-500/15 border-t-amber-500 rounded-full animate-spin duration-1000"></div>
+          {/* Inner pulsing sparkle */}
+          <div className="absolute flex items-center justify-center animate-pulse duration-1000">
+            <Sparkles className="w-6 h-6 text-amber-400" />
+          </div>
+        </div>
+        <div className="text-center space-y-1.5 px-4 max-w-xs">
+          <p className="text-xs font-black text-amber-400 uppercase tracking-widest font-sans">Menyiapkan Workspace ✨</p>
+          <p className="text-[10px] text-slate-500 font-bold leading-normal font-sans">Memuat aset dan struktur template pilihan Anda. Mohon tunggu sebentar...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showProfileModal) {
     return (
