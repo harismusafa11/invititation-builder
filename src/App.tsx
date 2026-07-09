@@ -110,6 +110,7 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [isTemplateLoading, setIsTemplateLoading] = useState(false);
+  const [showMobileTemplatesModal, setShowMobileTemplatesModal] = useState(false);
 
   // Platform features configurations loaded from database
   const [featuresConfig, setFeaturesConfig] = useState<any[]>([]);
@@ -2285,6 +2286,10 @@ export default function App() {
         isEditingTemplate={isEditingTemplate}
         customTemplates={customTemplates}
         onOpenPresets={fetchCustomTemplates}
+        onOpenMobileTemplates={() => {
+          fetchCustomTemplates();
+          setShowMobileTemplatesModal(true);
+        }}
         onReportBugClick={() => setShowBugReportModal(true)}
       />
 
@@ -2433,6 +2438,93 @@ export default function App() {
             setShowNewProjectModal(false);
           }}
         />
+      )}
+
+      {/* Mobile Templates Visual Grid Modal */}
+      {showMobileTemplatesModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl border border-slate-100 space-y-4 animate-in zoom-in-95 duration-200 max-h-[75vh] flex flex-col">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-100 shrink-0">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Pilih Template</h3>
+              </div>
+              <button 
+                onClick={() => setShowMobileTemplatesModal(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all cursor-pointer border-0 bg-transparent"
+              >
+                <Plus className="w-4 h-4 rotate-45" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 pr-1 space-y-4 py-1">
+              {/* Built-in Presets */}
+              <div className="space-y-2">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Premium Bawaan</span>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {Object.keys(DEFAULT_TEMPLATES)
+                    .filter((key) => {
+                      const builtinDbId = `builtin-${key}`;
+                      return customTemplates.length === 0 || customTemplates.some(t => t.id === builtinDbId);
+                    })
+                    .map((key) => {
+                      const builtinDbId = `builtin-${key}`;
+                      const foundBuiltinDb = customTemplates.find(t => t.id === builtinDbId);
+                      const displayName = foundBuiltinDb ? foundBuiltinDb.title : (DEFAULT_TEMPLATES as any)[key].name;
+                      const thumbnail = foundBuiltinDb?.thumbnail || (DEFAULT_TEMPLATES as any)[key].thumbnail || '/templates/placeholder.png';
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => {
+                            loadTemplatePreset(key);
+                            setShowMobileTemplatesModal(false);
+                          }}
+                          className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer border-0 p-0"
+                        >
+                          <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
+                            <img src={thumbnail} alt={displayName} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                          <div className="p-2 border-t border-slate-100 bg-white w-full">
+                            <span className="text-[10px] font-bold text-slate-700 truncate block">{displayName}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+
+              {/* Custom Templates from DB */}
+              {customTemplates.filter((t: any) => !t.id.startsWith('builtin-')).length > 0 && (
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Template Desain Kustom Anda</span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {customTemplates
+                      .filter((t: any) => !t.id.startsWith('builtin-'))
+                      .map((t: any) => (
+                        <button
+                          key={t.id}
+                          onClick={() => {
+                            loadTemplatePreset(t.id);
+                            setShowMobileTemplatesModal(false);
+                          }}
+                          className="group relative flex flex-col text-left border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden bg-slate-50 transition-all cursor-pointer border-0 p-0"
+                        >
+                          <div className="aspect-[4/3] w-full bg-slate-200 overflow-hidden relative">
+                            <img src={t.thumbnail || '/templates/placeholder.png'} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-350" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                          <div className="p-2 border-t border-slate-100 bg-white w-full">
+                            <span className="text-[10px] font-bold text-slate-700 truncate block">{t.title}</span>
+                          </div>
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
       {/* 5. Embed HTML Integration Modal */}
       {showEmbedModal && (
