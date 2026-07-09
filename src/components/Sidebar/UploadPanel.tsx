@@ -138,6 +138,47 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
     });
   };
 
+const compressImageClient = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxW = 1000;
+        const maxH = 1000;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxW) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          }
+        } else {
+          if (height > maxH) {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Compress as JPEG at 75% quality for a very small file size (Base64)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        resolve(dataUrl);
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target?.result as string;
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
+
   // Upload file to server for auto-compression into dynamic webp static assets
   const handleFile = async (file: File) => {
     if (file && file.type.startsWith('image/')) {
@@ -149,23 +190,39 @@ export default function UploadPanel({ onAddImage, onChangeBackground, currentBac
           method: 'POST',
           body: formData,
         });
-        const result = await res.json();
-
-        if (result.success && result.url) {
-          const newImage = {
-            id: Date.now().toString(),
-            url: result.url,
-            name: file.name.split('.')[0],
-          };
-          setUploadedImages((prev) => [newImage, ...prev]);
-          // Auto add to canvas using optimized WebP URL
-          onAddImage(newImage.url, newImage.name);
-        } else {
-          alert('Gagal mengompres gambar: ' + (result.error || 'Server error'));
+        
+        if (res.ok) {
+          const result = await res.json();
+          if (result.success && result.url) {
+            const newImage = {
+              id: Date.now().toString(),
+              url: result.url,
+              name: file.name.split('.')[0],
+            };
+            setUploadedImages((prev) => [newImage, ...prev]);
+            // Auto add to canvas using optimized WebP URL
+            onAddImage(newImage.url, newImage.name);
+            return; // Successful server upload
+          }
         }
       } catch (err) {
-        console.error('Failed to upload and compress image at backend:', err);
-        alert('Terjadi kesalahan koneksi saat mengunggah gambar.');
+        console.warn('Server-side image upload failed, falling back to client-side compression:', err);
+      }
+
+      // Fallback: compress client-side and use Base64 data URL
+      try {
+        const compressedBase64 = await compressImageClient(file);
+        const newImage = {
+          id: Date.now().toString(),
+          url: compressedBase64,
+          name: file.name.split('.')[0],
+        };
+        setUploadedImages((prev) => [newImage, ...prev]);
+        // Auto add to canvas
+        onAddImage(newImage.url, newImage.name);
+      } catch (fallbackErr) {
+        console.error('Failed to compress image on client-side:', fallbackErr);
+        alert('Gagal memproses gambar. Silakan coba file gambar lainnya.');
       }
     }
   };
