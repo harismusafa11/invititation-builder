@@ -15,6 +15,7 @@ interface Article {
   date: string;
   content: string[];
   faqs: { q: string; a: string }[];
+  youtubeId?: string;
 }
 
 export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps) {
@@ -150,6 +151,28 @@ export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps
         { q: 'Kapan waktu terbaik untuk mengirimkan link undangan digital?', a: 'Idealnya adalah 2 hingga 4 minggu sebelum hari H acara pernikahan diselenggarakan.' },
         { q: 'Apakah boleh menyebarkan undangan digital lewat grup WA?', a: 'Sebaiknya hindari mengirim di grup untuk kerabat dekat atau senior. Mengirim secara personal (japri) jauh lebih sopan dan dihargai.' }
       ]
+    },
+    {
+      slug: 'tutorial-membuat-undangan-digital-invitation-builder',
+      title: 'Tutorial Lengkap: Cara Membuat Undangan Digital Sendiri di invitationbuilder.net',
+      desc: 'Panduan langkah demi langkah cara merancang, mengedit, dan membagikan undangan pernikahan digital impian Anda menggunakan platform studio kreatif kami.',
+      category: 'Tips & Panduan',
+      readTime: '6 Menit',
+      date: '10 Juli 2026',
+      youtubeId: 'ZAFTEvRpktc',
+      content: [
+        'Membuat undangan pernikahan digital kini tidak lagi membutuhkan keahlian desain grafis atau pemrograman yang rumit. Dengan hadirnya platform invitationbuilder.net, Anda dapat membuat undangan digital sendiri secara instan, gratis, dan dengan kontrol kustomisasi penuh.',
+        'Di dalam artikel panduan ini, kami telah menyusun tutorial langkah demi langkah beserta video panduan lengkap untuk membantu Anda merancang undangan pernikahan digital yang estetik dan tampak profesional.',
+        'Langkah 1: Kunjungi halaman utama dan klik "Pilih Template" untuk melihat katalog desain kami. Kami menyediakan berbagai pilihan tema estetik, mulai dari tema pernikahan tradisional adat Jawa dengan ukiran batik heritage, nuansa modern emas putih luxury, hingga tema floral romantis alam terbuka.',
+        'Langkah 2: Gunakan Panel Kanvas Editor Studio untuk menyesuaikan seluruh informasi penting. Anda bisa mengganti nama kedua mempelai, mengunggah foto prewedding terbaik Anda langsung dari HP, menyesuaikan agenda rundown acara, serta menentukan musik latar (backsound) lagu romantis pilihan Anda.',
+        'Langkah 3: Tambahkan fitur-fitur interaktif seperti widget RSVP formulir kehadiran tamu, pengingat kalender digital, pencantuman peta lokasi (Google Maps pin), hingga fitur amplop angpao digital secara mandiri.',
+        'Langkah 4: Setelah desain terasa sempurna, simpan proyek Anda. Anda kemudian dapat mempublikasikannya, menyalin tautan undangan kustom (misalnya menyisipkan nama tamu dinamis), dan menyebarkannya langsung via WhatsApp kepada kerabat serta seluruh tamu undangan Anda.',
+        'Tontonlah video tutorial lengkap di bawah ini untuk melihat demo interaksi studio pembuatan undangan kami secara langsung!'
+      ],
+      faqs: [
+        { q: 'Apakah saya bisa mengubah musik latar dengan lagu sendiri?', a: 'Tentu saja! Di menu Widget/Music di sisi kiri editor, Anda dapat mengupload lagu/audio milik Anda sendiri atau menggunakan pilihan pustaka lagu romantis yang sudah kami sediakan.' },
+        { q: 'Bagaimana cara mendapatkan link undangan setelah selesai mendesain?', a: 'Klik tombol "Simpan" di sudut kanan atas studio, isi data diri Anda, dan Anda akan langsung mendapatkan tautan link publik undangan Anda untuk disebarkan ke WhatsApp.' }
+      ]
     }
   ];
 
@@ -219,6 +242,21 @@ export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps
                 <p key={idx}>{p}</p>
               ))}
             </div>
+
+            {/* YouTube Embed Player */}
+            {activeArticle.youtubeId && (
+              <div className="my-6 aspect-video w-full rounded-2xl overflow-hidden border border-slate-900 shadow-2xl relative bg-slate-950">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${activeArticle.youtubeId}`}
+                  title={activeArticle.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
 
             {/* FAQs Widget section */}
             {activeArticle.faqs && activeArticle.faqs.length > 0 && (
