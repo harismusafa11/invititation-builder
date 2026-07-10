@@ -19,7 +19,11 @@ const urlList = [
   `${BASE_URL}/`,
   `${BASE_URL}/templates`,
   `${BASE_URL}/blog`,
-  `${BASE_URL}/blog/cara-membuat-undangan-digital`,
+  `${BASE_URL}/blog/tutorial-membuat-undangan-digital-invitation-builder`,
+  `${BASE_URL}/templates/pernikahan-jawa`,
+  `${BASE_URL}/templates/tema-bunga-merah`,
+  `${BASE_URL}/templates/art-mewah`,
+  `${BASE_URL}/templates/blue-sea`,
 ];
 
 // Submit ke Bing IndexNow (otomatis dishare ke Yandex & search engine lain)
