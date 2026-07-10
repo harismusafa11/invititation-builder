@@ -64,6 +64,19 @@ export default function App() {
     }
   }, []);
 
+  // Manage editor-active body class to selectively hide floating ads on the editor
+  useEffect(() => {
+    const isEditorActive = !isTemplatesRoute && !isBlogRoute && !publicSlug && (!session || activeProjectId !== null) && !showProfileModal;
+    if (isEditorActive) {
+      document.body.classList.add('editor-active');
+    } else {
+      document.body.classList.remove('editor-active');
+    }
+    return () => {
+      document.body.classList.remove('editor-active');
+    };
+  }, [isTemplatesRoute, isBlogRoute, publicSlug, session, activeProjectId, showProfileModal]);
+
   const loadPublicInvitation = async (slug: string) => {
     setPublicLoading(true);
     setPublicError(null);

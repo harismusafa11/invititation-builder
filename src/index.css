@@ -197,3 +197,11 @@
   background-color: #1e293b !important;
   color: #ffffff !important;
 }
+
+/* Hide third-party floating ad widgets (Adsterra socialbar) on canvas editor */
+body.editor-active > *:not(#root):not(script):not(noscript):not(style):not(link) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
