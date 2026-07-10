@@ -57,7 +57,7 @@ export default function App() {
       }
     } else if (path === '/sys-admin' || path === '/super-admin') {
       setIsAdminRoute(true);
-    } else if (path === '/templates' || path === '/katalog') {
+    } else if (path.startsWith('/templates') || path === '/katalog') {
       setIsTemplatesRoute(true);
     } else if (path === '/blog' || path.startsWith('/blog/')) {
       setIsBlogRoute(true);

@@ -40,6 +40,24 @@ function clearFeaturesCache() {
   featuresLastFetched = 0;
 }
 
+/**
+ * Generate a clean SEO-friendly slug from a template title.
+ * Example: "Template Pernikahan Jawa" → "pernikahan-jawa"
+ */
+function generateTemplateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/^template\s*/i, '')    // hapus awalan "template "
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // hapus diacritic
+    .replace(/[^a-z0-9\s-]/g, '')   // hanya alfanumerik, spasi, strip
+    .trim()
+    .replace(/\s+/g, '-')           // spasi → strip
+    .replace(/-+/g, '-')            // strip berulang → satu strip
+    .replace(/^-|-$/g, '')          // hapus strip di awal/akhir
+    .substring(0, 80);
+}
+
 
 function getPool(): pg.Pool {
   if (pool) return pool;
@@ -880,7 +898,26 @@ async function startServer() {
     }
   });
 
-  // 0.1 Get full template data by ID (used when user clicks a template to load it)
+  // 0.1 Get template by SEO slug (derived from title) - MUST be before /:id route
+  app.get("/api/templates/by-slug/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const result = await dbQuery(
+        "SELECT id, title, slug, background, settings, pages, is_template, thumbnail, updated_at FROM invitations WHERE is_template = TRUE ORDER BY updated_at DESC"
+      );
+      // Match by computed slug from title
+      const template = result.rows.find((t: any) => generateTemplateSlug(t.title) === slug);
+      if (!template) {
+        return res.status(404).json({ success: false, error: "Template not found by slug" });
+      }
+      return res.json({ success: true, data: template });
+    } catch (error: any) {
+      console.error("[API] Error loading template by slug:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // 0.2 Get full template data by ID (used when user clicks a template to load it)
   app.get("/api/templates/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -993,9 +1030,9 @@ async function startServer() {
 
     try {
       const resolvedUserId = userId || 'mock-usr-admin';
-      const resolvedSlug = slug || `invitation-${id}`;
       const resolvedPaid = paid || false;
       const resolvedIsTemplate = isTemplate || false;
+      const resolvedSlug = resolvedIsTemplate ? generateTemplateSlug(title) : (slug || `invitation-${id}`);
 
       // 1. Detect if the project is new before upserting
       let isNewProject = false;
@@ -2210,6 +2247,81 @@ async function startServer() {
     }
   });
 
+  // --- Pre-rendered SEO Individual Template Detail Page ---
+  app.get("/templates/:slug", async (req, res, next) => {
+    try {
+      const { slug } = req.params;
+
+      // Find template by computed slug from title
+      const result = await dbQuery(
+        "SELECT id, title, thumbnail, updated_at FROM invitations WHERE is_template = TRUE ORDER BY updated_at DESC"
+      );
+      const template = result.rows.find((t: any) => generateTemplateSlug(t.title) === slug);
+
+      // If no template found, fall through to SPA (will show 404 or catalog)
+      if (!template) return next();
+
+      const templateName = template.title;
+      const title = `${templateName} - Template Undangan Digital Pernikahan | invitationbuilder.net`;
+      const description = `Gunakan ${templateName} untuk membuat undangan digital pernikahan Anda. Kustomisasi teks, foto, musik, dan RSVP secara online gratis di invitationbuilder.net.`;
+      const canonicalUrl = `https://invitationbuilder.net/templates/${slug}`;
+      const imageUrl = template.thumbnail || "https://invitationbuilder.net/logo.png";
+
+      const templateSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": templateName,
+        "description": description,
+        "url": canonicalUrl,
+        "image": imageUrl,
+        "brand": {
+          "@type": "Brand",
+          "name": "invitationbuilder.net"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "IDR",
+          "availability": "https://schema.org/InStock"
+        }
+      };
+
+      let htmlPath = path.join(process.cwd(), "index.html");
+      if (process.env.NODE_ENV === "production") {
+        htmlPath = path.join(process.cwd(), "dist", "index.html");
+      }
+      if (!fs.existsSync(htmlPath)) {
+        htmlPath = path.join(process.cwd(), "index.html");
+      }
+
+      let htmlContent = fs.readFileSync(htmlPath, "utf-8");
+      if (process.env.NODE_ENV !== "production" && vite) {
+        htmlContent = await vite.transformIndexHtml(req.originalUrl, htmlContent);
+      }
+
+      htmlContent = htmlContent
+        .replace("<!-- DYNAMIC_CANONICAL -->", `<link rel="canonical" href="${canonicalUrl}" />`)
+        .replace("<!-- DYNAMIC_SEO_TITLE -->", `<title>${title}</title>`)
+        .replace(
+          "<!-- DYNAMIC_SEO_META -->",
+          `<meta name="description" content="${description}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:image" content="${imageUrl}" />
+  <meta property="og:url" content="${canonicalUrl}" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${imageUrl}" />`
+        )
+        .replace("<!-- DYNAMIC_JSON_LD -->", `<script type="application/ld+json">${JSON.stringify(templateSchema)}</script>`);
+
+      return res.status(200).set({ "Content-Type": "text/html" }).end(htmlContent);
+    } catch (err: any) {
+      console.error("[SEO Template Detail] Error rendering template detail page:", err);
+      next();
+    }
+  });
+
   // --- Pre-rendered SEO Blog Articles portal ---
   app.get("/blog", async (req, res, next) => {
     try {
@@ -2320,6 +2432,16 @@ async function startServer() {
             { q: "Kapan waktu terbaik untuk mengirimkan link undangan digital?", a: "Idealnya adalah 2 hingga 4 minggu sebelum hari H acara pernikahan diselenggarakan." },
             { q: "Apakah boleh menyebarkan undangan digital lewat grup WA?", a: "Sebaiknya hindari mengirim di grup untuk kerabat dekat atau senior. Mengirim secara personal (japri) jauh lebih sopan dan dihargai." }
           ]
+        },
+        "tutorial-membuat-undangan-digital-invitation-builder": {
+          title: "Tutorial Lengkap: Cara Membuat Undangan Digital Sendiri di invitationbuilder.net",
+          desc: "Panduan langkah demi langkah cara merancang, mengedit, dan membagikan undangan pernikahan digital impian Anda menggunakan platform studio kreatif kami.",
+          category: "Tips & Panduan",
+          date: "2026-07-10",
+          faqs: [
+            { q: "Apakah saya bisa mengubah musik latar dengan lagu sendiri?", a: "Tentu saja! Di menu Widget/Music di sisi kiri editor, Anda dapat mengupload lagu/audio milik Anda sendiri atau menggunakan pilihan pustaka lagu romantis yang sudah kami sediakan." },
+            { q: "Bagaimana cara mendapatkan link undangan setelah selesai mendesain?", a: "Klik tombol \"Simpan\" di sudut kanan atas studio, isi data diri Anda, dan Anda akan langsung mendapatkan tautan link publik undangan Anda untuk disebarkan ke WhatsApp." }
+          ]
         }
       };
 
@@ -2418,11 +2540,17 @@ async function startServer() {
   // --- Dynamic XML Sitemap for SEO Crawlers ---
   app.get("/sitemap.xml", async (req, res) => {
     try {
-      const result = await dbQuery(
+      // 1. Fetch public user invitations
+      const userInvitations = await dbQuery(
         "SELECT slug, updated_at FROM invitations WHERE (is_template = FALSE OR is_template IS NULL) AND slug IS NOT NULL"
       );
+
+      // 2. Fetch public templates
+      const templates = await dbQuery(
+        "SELECT title, updated_at FROM invitations WHERE is_template = TRUE"
+      );
       
-      const xmlUrls = result.rows.map((row: any) => {
+      const xmlUserUrls = userInvitations.rows.map((row: any) => {
         const lastMod = row.updated_at ? new Date(row.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
         return `
   <url>
@@ -2433,16 +2561,66 @@ async function startServer() {
   </url>`;
       }).join('');
 
+      const xmlTemplateUrls = templates.rows.map((row: any) => {
+        const lastMod = row.updated_at ? new Date(row.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+        const slug = generateTemplateSlug(row.title);
+        return `
+  <url>
+    <loc>https://invitationbuilder.net/templates/${encodeURIComponent(slug)}</loc>
+    <lastmod>${lastMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>`;
+      }).join('');
+
+      const blogSlugs = [
+        "tips-membuat-undangan-digital-elegan",
+        "rundown-acara-pernikahan-modern",
+        "contoh-kata-kata-undangan-pernikahan-digital",
+        "panduan-memilih-lagu-pernikahan-romantis",
+        "tren-desain-undangan-digital-pernikahan-2026",
+        "cara-menyebarkan-link-undangan-digital-lewat-whatsapp",
+        "tutorial-membuat-undangan-digital-invitation-builder"
+      ];
+
+      const xmlBlogUrls = blogSlugs.map((slug) => {
+        return `
+  <url>
+    <loc>https://invitationbuilder.net/blog/${slug}</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>`;
+      }).join('');
+
+      const today = new Date().toISOString().split('T')[0];
+
       const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
     <loc>https://invitationbuilder.net/</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
-  <!-- Public Invitations -->${xmlUrls}
+  <!-- Templates Hub -->
+  <url>
+    <loc>https://invitationbuilder.net/templates</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <!-- Blog Hub -->
+  <url>
+    <loc>https://invitationbuilder.net/blog</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <!-- Template Pages -->${xmlTemplateUrls}
+  <!-- Blog Articles -->${xmlBlogUrls}
+  <!-- Public User Invitations -->${xmlUserUrls}
 </urlset>`;
 
       res.header("Content-Type", "application/xml");
