@@ -45,7 +45,8 @@ function clearFeaturesCache() {
  * Example: "Template Pernikahan Jawa" → "pernikahan-jawa"
  */
 function generateTemplateSlug(title: string): string {
-  return title
+  if (!title) return '';
+  return String(title)
     .toLowerCase()
     .replace(/^template\s*/i, '')    // hapus awalan "template "
     .normalize('NFD')

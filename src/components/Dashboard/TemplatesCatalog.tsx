@@ -9,7 +9,8 @@ interface TemplatesCatalogProps {
 }
 
 function generateTemplateSlug(title: string): string {
-  return title
+  if (!title) return '';
+  return String(title)
     .toLowerCase()
     .replace(/^template\s*/i, '')    // hapus awalan "template "
     .normalize('NFD')
@@ -83,8 +84,8 @@ export default function TemplatesCatalog({ onBack, onSelectTemplate, customTempl
   // Dynamic templates matching database custom templates
   const dynamicTemplates = customTemplates.map((t: any) => ({
     key: t.id,
-    name: t.title,
-    slug: generateTemplateSlug(t.title),
+    name: t.title || t.name || 'Untitled Template',
+    slug: t.slug || generateTemplateSlug(t.title || t.name || ''),
     desc: `Desain kustom eksklusif buatan admin. Kustomisasi tata letak, teks, musik, dan ornamen secara penuh.`,
     price: 'Free',
     theme: 'custom',
