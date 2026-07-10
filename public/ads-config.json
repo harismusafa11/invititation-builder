@@ -1,13 +1,13 @@
 {
   "adsterra": {
-    "enabled": false,
-    "nativeZoneId": "29775337",
-    "mobileBannerZoneId": "29775343",
-    "socialBarZoneId": "29775338",
-    "banner728x90ZoneId": "29775345",
-    "banner468x60ZoneId": "29775348",
-    "banner300x250ZoneId": "29775347",
-    "popunderZoneId": "29775336",
-    "smartlinkZoneId": "29775340"
+    "enabled": true,
+    "nativeZoneId": "54baef0023e23b5b4f80050ef3887bf1",
+    "mobileBannerZoneId": "192f0e4c68d0d4a2293a4575ba16f4aa",
+    "socialBarZoneId": "be8eb269ccb81a471e8d3beb763e050c",
+    "banner728x90ZoneId": "",
+    "banner468x60ZoneId": "",
+    "banner300x250ZoneId": "",
+    "popunderZoneId": "",
+    "smartlinkZoneId": ""
   }
 }

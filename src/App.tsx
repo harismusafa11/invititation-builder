@@ -1874,7 +1874,6 @@ export default function App() {
           onSelectTemplate={handleSelectTemplateFromCatalog}
           customTemplates={customTemplates}
         />
-        <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
       </>
     );
   }
@@ -1890,7 +1889,6 @@ export default function App() {
           }}
           onSelectTemplate={handleSelectTemplateFromCatalog}
         />
-        <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
       </>
     );
   }
@@ -2006,7 +2004,6 @@ export default function App() {
           onClose={() => {}}
           isPublicView={true}
         />
-        <AdsterraAd zoneIdKey="socialBarZoneId" format="socialbar" />
       </div>
     );
   }
