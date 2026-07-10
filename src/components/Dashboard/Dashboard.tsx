@@ -1368,34 +1368,23 @@ export default function Dashboard({
             </div>
 
             <div className="p-6 space-y-4">
-              {isAccountPremium ? (
-                <div className="space-y-4 text-slate-300 text-xs">
-                  <div className="border border-dashed border-slate-900 rounded-xl p-6 text-center space-y-3 bg-slate-950/20">
-                    <ClipboardList className="w-8 h-8 text-slate-700 mx-auto" />
-                    <p className="text-xs text-slate-400 leading-normal">Tarik file Excel (.xlsx) atau CSV Anda ke sini untuk mulai mengimpor data tamu.</p>
-                    <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-[10px] font-bold rounded-lg cursor-pointer">
-                      Pilih Dokumen
-                    </button>
-                  </div>
-                  <p className="text-[9px] text-slate-500 text-center leading-normal">Pastikan file Anda memiliki kolom header bernama "Nama" dan "No Telp / WhatsApp".</p>
+              <div className="space-y-4 text-center">
+                <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mx-auto text-amber-500 animate-pulse">
+                  <ClipboardList className="w-6 h-6" />
                 </div>
-              ) : (
-                <div className="space-y-4 text-center">
-                  <div className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10 text-yellow-500 text-xs text-left leading-relaxed">
-                    Fitur <strong>Import Massal Nama Tamu</strong> eksklusif bagi pengguna akun Premium InviteStudio.
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">Untuk menikmati kemudahan menyebar undangan ribuan tamu sekaligus via WhatsApp, silakan upgrade akun Anda ke Premium.</p>
-                  <button 
-                    onClick={() => {
-                      setShowImportModal(false);
-                      setCurrentView('premium');
-                    }}
-                    className="w-full py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8943A] text-white text-xs font-bold rounded-xl cursor-pointer shadow-md"
-                  >
-                    Upgrade Premium — Rp 25.000
-                  </button>
+                <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10 text-amber-500 text-xs text-center leading-relaxed font-semibold">
+                  Mohon maaf, untuk fitur ini masih dalam tahap pengembangan.
                 </div>
-              )}
+                <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+                  Tim pengembang kami sedang bekerja keras menyiapkan fitur impor data spreadsheet Excel &amp; CSV agar Anda dapat mengunggah ribuan nama tamu secara massal secara instan.
+                </p>
+                <button 
+                  onClick={() => setShowImportModal(false)}
+                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl cursor-pointer transition-all"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
         </div>
