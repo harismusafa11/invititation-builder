@@ -1137,6 +1137,10 @@ export default function App() {
   };
 
   const handleExitEditor = () => {
+    if (saveStatus === 'unsaved' && !isGuestMode) {
+      const confirmLeave = window.confirm("Projek editing Anda belum di-save, yakin akan meninggalkan desain?");
+      if (!confirmLeave) return; // Abort exit
+    }
     setActiveProjectId(null);
     setIsEditingTemplate(false);
     if (isAdminRoute) {
@@ -1218,6 +1222,22 @@ export default function App() {
     if (pages.length === 0) return;
     setSaveStatus('unsaved');
   }, [pages, background, settings, title]);
+
+  // Prompt before unloading page (close tab or refresh) if there are unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveStatus === 'unsaved' && activeProjectId && !isGuestMode) {
+        e.preventDefault();
+        e.returnValue = ''; // Standard trigger for modern browsers confirmation dialog
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [saveStatus, activeProjectId, isGuestMode]);
 
   // --- 4. History Actions (Undo / Redo) ---
   const handleUndo = () => {
