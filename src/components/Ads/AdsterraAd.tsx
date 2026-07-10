@@ -78,25 +78,15 @@ export default function AdsterraAd({ zoneIdKey, format, fallbackComponent }: Ads
           scriptInvoke.src = `//www.highperformanceformat.com/${zoneId}/invoke.js`;
           container.appendChild(scriptInvoke);
         } else if (format === 'native') {
+          // Native Banner: div container dengan id="container-{KEY}" + async invoke.js
           const adContainer = document.createElement('div');
-          const adContainerId = `container-adsterra-native-${Math.random().toString(36).substr(2, 9)}`;
-          adContainer.id = adContainerId;
+          adContainer.id = `container-${zoneId}`;
           container.appendChild(adContainer);
 
-          const scriptConf = document.createElement('script');
-          scriptConf.type = 'text/javascript';
-          scriptConf.text = `
-            (window.sc_adv_out = window.sc_adv_out || []).push({
-              id: "${zoneId}",
-              domain: "n.ads1-adsterra.com",
-              target: "${adContainerId}"
-            });
-          `;
-          container.appendChild(scriptConf);
-
           const scriptInvoke = document.createElement('script');
-          scriptInvoke.type = 'text/javascript';
-          scriptInvoke.src = '//cdn.adsterra.com/js/adv_out.js';
+          scriptInvoke.async = true;
+          scriptInvoke.setAttribute('data-cfasync', 'false');
+          scriptInvoke.src = `https://tuxedoarbourannouncement.com/${zoneId}/invoke.js`;
           container.appendChild(scriptInvoke);
         } else if (format === 'socialbar') {
           const scriptId = `adsterra-socialbar-${zoneId}`;
