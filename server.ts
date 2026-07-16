@@ -1033,7 +1033,8 @@ async function startServer() {
       const resolvedUserId = userId || 'mock-usr-admin';
       const resolvedPaid = paid || false;
       const resolvedIsTemplate = isTemplate || false;
-      const resolvedSlug = resolvedIsTemplate ? generateTemplateSlug(title) : (slug || `invitation-${id}`);
+      const idSuffix = id.includes('-') ? id.substring(id.indexOf('-') + 1) : id.substring(Math.max(0, id.length - 6));
+      const resolvedSlug = resolvedIsTemplate ? `${generateTemplateSlug(title)}-${idSuffix}` : (slug || `invitation-${id}`);
 
       // 1. Detect if the project is new before upserting
       let isNewProject = false;
