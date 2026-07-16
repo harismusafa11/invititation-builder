@@ -1075,24 +1075,28 @@ async function startServer() {
       );
       if (resolvedIsTemplate) {
         clearTemplatesCache();
-        const checkFeature = await dbQuery("SELECT 1 FROM platform_features_config WHERE feature_id = $1", [id]);
-        if (checkFeature.rows.length === 0) {
-          if (useLocalFallback) {
-            const list = localDB['platform_features_config'] || [];
-            list.push({
-              feature_id: id,
-              feature_type: 'template',
-              name: title,
-              is_premium: false
-            });
-            localDB['platform_features_config'] = list;
-            saveLocalDB();
-          } else {
-            await dbQuery(
-              "INSERT INTO platform_features_config (feature_id, feature_type, name, is_premium) VALUES ($1, 'template', $2, FALSE)",
-              [id, title]
-            );
+        try {
+          const checkFeature = await dbQuery("SELECT 1 FROM platform_features_config WHERE feature_id = $1", [id]);
+          if (checkFeature.rows.length === 0) {
+            if (useLocalFallback) {
+              const list = localDB['platform_features_config'] || [];
+              list.push({
+                feature_id: id,
+                feature_type: 'template',
+                name: title,
+                is_premium: false
+              });
+              localDB['platform_features_config'] = list;
+              saveLocalDB();
+            } else {
+              await dbQuery(
+                "INSERT INTO platform_features_config (feature_id, feature_type, name, is_premium) VALUES ($1, 'template', $2, FALSE)",
+                [id, title]
+              );
+            }
           }
+        } catch (featureErr: any) {
+          console.warn("[API] Failed to save template feature to config:", featureErr.message);
         }
       }
 
