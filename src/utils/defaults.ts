@@ -95,7 +95,8 @@ export const SAMPLE_IMAGES = [
 // Helper to generate elements easily with unique IDs
 const makeId = () => Math.random().toString(36).substring(2, 9);
 
-export const DEFAULT_TEMPLATES: Record<string, InvitationTemplate> = {};
+import { EXTRA_TEMPLATES } from './customTemplatesData';
+export const DEFAULT_TEMPLATES: Record<string, InvitationTemplate> = EXTRA_TEMPLATES;
 
 
 
