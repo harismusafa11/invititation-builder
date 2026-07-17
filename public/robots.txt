@@ -15,6 +15,9 @@ Disallow: /sys-admin/
 Disallow: /super-admin/
 Disallow: /api/
 
+# Memblokir URL hasil pencarian agar tidak dianggap duplikat
+Disallow: /*?s=
+
 # TODO: Ganti domain berikut setelah website live.
 # Sitemap: https://invitationbuilder.net/sitemap.xml
 Sitemap: https://invitationbuilder.net/sitemap.xml

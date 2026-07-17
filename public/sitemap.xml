@@ -8,4 +8,29 @@
        <changefreq>daily</changefreq>
        <priority>1.0000</priority>
   </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/cara-menyebarkan-link-undangan-digital-lewat-whatsapp</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/tips-membuat-undangan-digital-elegan</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/panduan-memilih-lagu-pernikahan-romantis</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/tutorial-membuat-undangan-digital-invitation-builder</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/tren-desain-undangan-digital-pernikahan-2026</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
 </urlset>
