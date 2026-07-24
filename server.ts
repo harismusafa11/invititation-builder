@@ -2399,6 +2399,46 @@ async function startServer() {
             { q: "Apakah susunan acara perlu ditampilkan di undangan digital?", a: "Ya, menampilkan agenda acara sangat dianjurkan agar tamu undangan tahu waktu yang tepat untuk datang, terutama jika ada pembagian sesi kedatangan." }
           ]
         },
+        "panduan-hemat-biaya-pernikahan-undangan-digital": {
+          title: "Panduan Hemat Biaya Pernikahan 2026: Mengapa Undangan Digital Adalah Solusi Terbaik",
+          desc: "Analisis perbandingan biaya undangan fisik cetak vs undangan digital online. Hemat hingga jutaan Rupiah dengan fitur lengkap dan ramah lingkungan.",
+          category: "Anggaran & Logistik",
+          date: "2026-07-20",
+          faqs: [
+            { q: "Apakah aman mengalihkan seluruh undangan ke format digital?", a: "Sangat aman dan modern! Untuk kerabat sepuh/senior, Anda tetap bisa mencetak beberapa eksemplar fisik terbatas jika dibutuhkan, sementara 90% kerabat lainnya dikirimkan link digital." },
+            { q: "Berapa persen potensi penghematan dengan undangan digital?", a: "Pasangan pengantin rata-rata menghemat 70% hingga 90% dari total anggaran alokasi undangan tradisional." }
+          ]
+        },
+        "cara-mengelola-rsvp-buku-tamu-digital": {
+          title: "Cara Efektif Mengelola RSVP & Buku Tamu Digital untuk Resepsi Pernikahan Tanpa Ribet",
+          desc: "Panduan manajerial mengurutkan daftar tamu, konfirmasi kehadiran otomatis real-time, QR Code check-in di gedung, dan fitur amplop digital.",
+          category: "Anggaran & Logistik",
+          date: "2026-07-18",
+          faqs: [
+            { q: "Bagaimana cara memantau data RSVP yang masuk?", a: "Anda dapat memantau seluruh data konfirmasi kehadiran tamu secara langsung melalui Dashboard Admin InviteStudio yang terupdate secara real-time." },
+            { q: "Apakah QR Code buku tamu membutuhkan alat scan khusus?", a: "Tidak butuh alat khusus. Kamera HP Android maupun iPhone panitia penerima tamu dapat langsung discan tanpa aplikasi tambahan." }
+          ]
+        },
+        "panduan-tema-dan-dress-code-pernikahan-digital": {
+          title: "Panduan Menentukan Tema & Dress Code Pernikahan dalam Undangan Digital",
+          desc: "Inspirasi memilih palet warna dress code (Earth tone, Pastel, Black Tie, Rustic) dan cara mengomunikasikannya secara estetik kepada tamu.",
+          category: "Tren & Etnik",
+          date: "2026-07-15",
+          faqs: [
+            { q: "Apakah wajar jika mewajibkan dress code kepada tamu?", a: "Sangat wajar! Sebaiknya sampaikan dalam bentuk rekomendasi atau panduan agar suasana pesta pernikahan semakin semarak." },
+            { q: "Di mana posisi terbaik meletakkan info dress code pada undangan?", a: "Letakkan di bagian bawah detail waktu & lokasi acara, atau buat section khusus ber-icon 'Dress Code Guide'." }
+          ]
+        },
+        "tips-keamanan-dan-privasi-undangan-digital": {
+          title: "Tips Menjaga Keamanan & Privasi Undangan Pernikahan Digital Anda",
+          desc: "Cara melindungi data lokasi, foto galeri pribadi, dan nomor rekening dari penyalahgunaan internet dengan fitur proteksi kata sandi dan link kustom.",
+          category: "Tips & Panduan",
+          date: "2026-07-12",
+          faqs: [
+            { q: "Apakah orang lain yang tidak diundang bisa melihat foto galeri kita?", a: "Jika Anda mengaktifkan fitur Password Protection atau Private Link, orang asing tidak akan bisa mengakses foto galeri tanpa kata sandi." },
+            { q: "Apakah aman mencantumkan nomor rekening di undangan digital?", a: "Sangat aman jika menggunakan platform tepercaya seperti InviteStudio yang dilengkapi enkripsi SSL dan fitur perlindungan data." }
+          ]
+        },
         "contoh-kata-kata-undangan-pernikahan-digital": {
           title: "25 Contoh Kata-Kata Undangan Pernikahan Digital yang Sopan & Menarik",
           desc: "Kumpulan inspirasi kata-kata (wording) untuk undangan pernikahan online digital, mulai dari islami, kristen, kasual, hingga bahasa Inggris yang sopan.",
@@ -2582,6 +2622,10 @@ async function startServer() {
       const blogSlugs = [
         "tips-membuat-undangan-digital-elegan",
         "rundown-acara-pernikahan-modern",
+        "panduan-hemat-biaya-pernikahan-undangan-digital",
+        "cara-mengelola-rsvp-buku-tamu-digital",
+        "panduan-tema-dan-dress-code-pernikahan-digital",
+        "tips-keamanan-dan-privasi-undangan-digital",
         "contoh-kata-kata-undangan-pernikahan-digital",
         "panduan-memilih-lagu-pernikahan-romantis",
         "tren-desain-undangan-digital-pernikahan-2026",

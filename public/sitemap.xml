@@ -4,9 +4,35 @@
 
   <url>
        <loc>https://www.invitationbuilder.net/</loc>
-       <lastmod>2026-07-15T10:09:21+00:00</lastmod>
+       <lastmod>2026-07-24T10:00:00+00:00</lastmod>
        <changefreq>daily</changefreq>
        <priority>1.0000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog</loc>
+       <lastmod>2026-07-24T10:00:00+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.9000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/panduan-hemat-biaya-pernikahan-undangan-digital</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/cara-mengelola-rsvp-buku-tamu-digital</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/panduan-tema-dan-dress-code-pernikahan-digital</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/tips-keamanan-dan-privasi-undangan-digital</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.invitationbuilder.net/blog/cara-menyebarkan-link-undangan-digital-lewat-whatsapp</loc>
@@ -15,6 +41,16 @@
   </url>
   <url>
        <loc>https://www.invitationbuilder.net/blog/tips-membuat-undangan-digital-elegan</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/rundown-acara-pernikahan-modern</loc>
+       <changefreq>weekly</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.invitationbuilder.net/blog/contoh-kata-kata-undangan-pernikahan-digital</loc>
        <changefreq>weekly</changefreq>
        <priority>0.8000</priority>
   </url>
@@ -34,3 +70,4 @@
        <priority>0.8000</priority>
   </url>
 </urlset>
+
