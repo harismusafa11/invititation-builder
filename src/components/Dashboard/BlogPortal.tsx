@@ -44,13 +44,15 @@ const AdLeaderboard: React.FC = () => {
 
     const scriptInvoke = document.createElement('script');
     scriptInvoke.type = 'text/javascript';
+    scriptInvoke.async = true;
+    scriptInvoke.setAttribute('data-cfasync', 'false');
     scriptInvoke.src = 'https://tuxedoarbourannouncement.com/3084b8268a0866498649fa084c81b6f6/invoke.js';
     container.appendChild(scriptInvoke);
   }, []);
 
   return (
     <div className="w-full flex justify-center items-center my-3 overflow-hidden min-h-[90px] bg-slate-950/30 border border-slate-900/60 rounded-2xl p-2 shadow-inner">
-      <div ref={containerRef} className="max-w-full overflow-hidden flex justify-center" />
+      <div ref={containerRef} className="max-w-full overflow-hidden flex justify-center min-h-[90px] min-w-[320px] md:min-w-[728px]" />
     </div>
   );
 };
@@ -79,6 +81,8 @@ const AdSidebar: React.FC<{ id?: string }> = ({ id }) => {
 
     const scriptInvoke = document.createElement('script');
     scriptInvoke.type = 'text/javascript';
+    scriptInvoke.async = true;
+    scriptInvoke.setAttribute('data-cfasync', 'false');
     scriptInvoke.src = 'https://tuxedoarbourannouncement.com/e48b109ce2ec69cc4afcd1d987ac2cf0/invoke.js';
     container.appendChild(scriptInvoke);
   }, [id]);
@@ -112,7 +116,7 @@ const AdNativeBar: React.FC<{ instanceId?: string }> = ({ instanceId = '1' }) =>
 
   return (
     <div className="w-full flex justify-center items-center my-5 overflow-hidden min-h-[100px] bg-slate-950/60 border border-slate-900 rounded-2xl p-3 shadow-md">
-      <div ref={containerRef} className="w-full" />
+      <div ref={containerRef} className="w-full min-h-[100px]" />
     </div>
   );
 };
