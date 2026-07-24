@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Clock, User, Heart, Compass, Sparkles, ChevronRight, Filter, ShieldCheck, DollarSign, Users, Palette, Search } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, BookOpen, Clock, User, Heart, Compass, Sparkles, ChevronRight, Filter, ShieldCheck, DollarSign, Users, Palette, Search, ExternalLink, Gift, Tag } from 'lucide-react';
 
 interface BlogPortalProps {
   onBack: () => void;
@@ -17,6 +17,176 @@ interface Article {
   faqs: { q: string; a: string }[];
   youtubeId?: string;
 }
+
+const SMART_LINK_URL = "https://tuxedoarbourannouncement.com/dbnxdg1a?key=54a57f33758303e3bee47709308aa78d";
+
+// 1. Leaderboard Banner Ad (728x90)
+const AdLeaderboard: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.innerHTML = '';
+
+    const scriptConf = document.createElement('script');
+    scriptConf.type = 'text/javascript';
+    scriptConf.text = `
+      atOptions = {
+        'key' : '3084b8268a0866498649fa084c81b6f6',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    `;
+    container.appendChild(scriptConf);
+
+    const scriptInvoke = document.createElement('script');
+    scriptInvoke.type = 'text/javascript';
+    scriptInvoke.src = 'https://tuxedoarbourannouncement.com/3084b8268a0866498649fa084c81b6f6/invoke.js';
+    container.appendChild(scriptInvoke);
+  }, []);
+
+  return (
+    <div className="w-full flex justify-center items-center my-4 overflow-hidden min-h-[90px] bg-slate-950/30 border border-slate-900/60 rounded-2xl p-2">
+      <div ref={containerRef} className="max-w-full overflow-hidden flex justify-center" />
+    </div>
+  );
+};
+
+// 2. Sidebar Skyscraper Banner Ad (160x600)
+const AdSidebar: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.innerHTML = '';
+
+    const scriptConf = document.createElement('script');
+    scriptConf.type = 'text/javascript';
+    scriptConf.text = `
+      atOptions = {
+        'key' : 'e48b109ce2ec69cc4afcd1d987ac2cf0',
+        'format' : 'iframe',
+        'height' : 600,
+        'width' : 160,
+        'params' : {}
+      };
+    `;
+    container.appendChild(scriptConf);
+
+    const scriptInvoke = document.createElement('script');
+    scriptInvoke.type = 'text/javascript';
+    scriptInvoke.src = 'https://tuxedoarbourannouncement.com/e48b109ce2ec69cc4afcd1d987ac2cf0/invoke.js';
+    container.appendChild(scriptInvoke);
+  }, []);
+
+  return (
+    <div className="w-[160px] min-h-[600px] flex justify-center items-center overflow-hidden bg-slate-950/40 border border-slate-900 rounded-2xl p-1 sticky top-24 shadow-xl">
+      <div ref={containerRef} className="w-[160px] h-[600px] overflow-hidden" />
+    </div>
+  );
+};
+
+// 3. Native Bar Banner Ad
+const AdNativeBar: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.innerHTML = '';
+
+    const nativeDiv = document.createElement('div');
+    nativeDiv.id = 'container-54baef0023e23b5b4f80050ef3887bf1';
+    container.appendChild(nativeDiv);
+
+    const scriptInvoke = document.createElement('script');
+    scriptInvoke.async = true;
+    scriptInvoke.setAttribute('data-cfasync', 'false');
+    scriptInvoke.src = 'https://tuxedoarbourannouncement.com/54baef0023e23b5b4f80050ef3887bf1/invoke.js';
+    container.appendChild(scriptInvoke);
+  }, []);
+
+  return (
+    <div className="w-full flex justify-center items-center my-6 overflow-hidden min-h-[100px] bg-slate-950/50 border border-slate-900/80 rounded-2xl p-3 shadow-inner">
+      <div ref={containerRef} className="w-full" />
+    </div>
+  );
+};
+
+// 4. Smart Link Enticing Callout Cards
+interface SmartLinkCalloutProps {
+  variant?: 'featured' | 'in-article' | 'compact';
+}
+
+const SmartLinkCallout: React.FC<SmartLinkCalloutProps> = ({ variant = 'featured' }) => {
+  const handleClick = () => {
+    window.open(SMART_LINK_URL, '_blank', 'noopener,noreferrer');
+  };
+
+  if (variant === 'in-article') {
+    return (
+      <div 
+        onClick={handleClick}
+        className="my-8 bg-gradient-to-r from-amber-500/15 via-blue-600/20 to-purple-600/15 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-5 cursor-pointer transition-all hover:scale-[1.01] shadow-xl group relative overflow-hidden text-left"
+      >
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="flex items-start space-x-3">
+          <div className="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl shrink-0 group-hover:rotate-12 transition-transform">
+            <Gift className="w-5 h-5" />
+          </div>
+          <div className="space-y-1.5 flex-1 min-w-0">
+            <div className="inline-flex items-center space-x-1.5 text-[9px] font-extrabold tracking-widest text-amber-400 uppercase bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+              <span>✨ REKOMENDASI SPESIAL PENGANTIN</span>
+            </div>
+            <h4 className="text-sm md:text-base font-bold text-white font-cinzel leading-snug group-hover:text-amber-300 transition-colors">
+              💎 Klaim Voucher Diskon Vendor Pernikahan &amp; Bonus VIP 2026 Gratis!
+            </h4>
+            <p className="text-xs text-slate-300 font-light leading-relaxed">
+              Dapatkan akses langsung ke promo potongan harga gedung resepsi, paket photobooth, serta e-book checklist persiapan nikah terlengkap bulan ini.
+            </p>
+            <div className="pt-1 flex items-center space-x-1 text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform">
+              <span>Klaim Voucher Diskon Sekarang</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      onClick={handleClick}
+      className="my-6 bg-gradient-to-br from-[#12172a] via-[#101428] to-[#1c162e] border border-blue-500/30 hover:border-amber-400/50 rounded-3xl p-6 md:p-8 cursor-pointer transition-all hover:-translate-y-1 shadow-2xl relative overflow-hidden group text-left"
+    >
+      <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-400/20 transition-colors" />
+      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="space-y-2.5 max-w-xl">
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full text-[10px] font-extrabold tracking-widest uppercase">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>PROMO VENDOR &amp; BONUS EXCLUSIVE 2026</span>
+          </div>
+          <h3 className="text-lg md:text-xl font-extrabold text-white font-cinzel leading-snug group-hover:text-amber-300 transition-colors">
+            🎁 Dapatkan Voucher Diskon Gedung &amp; Bundle Preset Musik Undangan VIP
+          </h3>
+          <p className="text-xs text-slate-300 font-light leading-relaxed">
+            Khusus calon pengantin! Ambil promo potongan harga khusus vendor foto/video, souvenir, dan template rundown digital eksklusif hanya untuk minggu ini.
+          </p>
+        </div>
+        <button 
+          className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs transition-all shadow-lg shadow-amber-500/20 flex items-center space-x-2 shrink-0 group-hover:scale-105 border-0"
+        >
+          <span>Klaim Bonus VIP Sekarang</span>
+          <ExternalLink className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps) {
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
@@ -363,212 +533,249 @@ export default function BlogPortal({ onBack, onSelectTemplate }: BlogPortalProps
         </div>
       </header>
 
-      {/* Main Section */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        {activeArticle ? (
-          /* READ ARTICLE VIEW */
-          <article className="space-y-8 animate-in fade-in duration-200">
-            {/* Meta header */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/25 text-[10px] font-extrabold uppercase tracking-widest text-blue-400 rounded-lg">
-                  {activeArticle.category}
-                </span>
-              </div>
-              <h1 className="text-2xl md:text-4xl font-extrabold text-white leading-tight font-cinzel">
-                {activeArticle.title}
-              </h1>
-              
-              <div className="flex items-center space-x-4 text-slate-500 text-[10px] font-bold">
-                <span className="flex items-center space-x-1">
-                  <User className="w-3.5 h-3.5" />
-                  <span>Tim Spesialis InviteStudio</span>
-                </span>
-                <span className="flex items-center space-x-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{activeArticle.readTime} Bacaan</span>
-                </span>
-                <span>•</span>
-                <span>{activeArticle.date}</span>
-              </div>
-            </div>
+      {/* Main Section Layout with Sidebar */}
+      <main className="max-w-6xl mx-auto px-4 md:px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_170px] gap-8 items-start">
+          
+          {/* Main Content Column */}
+          <div className="min-w-0">
+            {activeArticle ? (
+              /* READ ARTICLE VIEW */
+              <article className="space-y-8 animate-in fade-in duration-200">
+                {/* Top Banner Leaderboard Ad (728x90) */}
+                <AdLeaderboard />
 
-            {/* Featured decorative divider */}
-            <div className="h-[1px] bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
-
-            {/* Description Summary Callout */}
-            <div className="bg-blue-950/20 border-l-4 border-blue-500 p-4 rounded-r-2xl text-xs text-slate-300 italic leading-relaxed">
-              "{activeArticle.desc}"
-            </div>
-
-            {/* Article Content paragraphs */}
-            <div className="space-y-5 text-sm text-slate-300 leading-relaxed font-light font-sans">
-              {activeArticle.content.map((p, idx) => {
-                if (p.startsWith('## ')) {
-                  return (
-                    <h2 key={idx} className="text-base md:text-lg font-bold text-amber-400 font-cinzel pt-4 pb-1 border-b border-slate-900/60">
-                      {p.replace('## ', '')}
-                    </h2>
-                  );
-                }
-                return <p key={idx}>{p}</p>;
-              })}
-            </div>
-
-            {/* YouTube Embed Player */}
-            {activeArticle.youtubeId && (
-              <div className="my-6 aspect-video w-full rounded-2xl overflow-hidden border border-slate-900 shadow-2xl relative bg-slate-950">
-                <iframe
-                  className="absolute inset-0 w-full h-full"
-                  src={`https://www.youtube.com/embed/${activeArticle.youtubeId}`}
-                  title={activeArticle.title}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            )}
-
-            {/* FAQs Widget section */}
-            {activeArticle.faqs && activeArticle.faqs.length > 0 && (
-              <div className="bg-slate-950/60 border border-slate-900 rounded-3xl p-6 md:p-8 space-y-4">
-                <h3 className="text-xs font-extrabold tracking-wider uppercase text-[#D4AF37] flex items-center space-x-2 font-cinzel">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Pertanyaan Umum (FAQ)</span>
-                </h3>
+                {/* Meta header */}
                 <div className="space-y-4">
-                  {activeArticle.faqs.map((faq, i) => (
-                    <div key={i} className="space-y-1.5 text-xs bg-slate-900/40 p-4 rounded-xl border border-slate-900">
-                      <h4 className="font-extrabold text-white flex items-start space-x-1.5">
-                        <span className="text-blue-400">Q:</span>
-                        <span>{faq.q}</span>
-                      </h4>
-                      <p className="text-slate-400 font-light leading-relaxed pl-5">
-                        <strong className="text-amber-500 font-normal">A:</strong> {faq.a}
-                      </p>
-                    </div>
-                  ))}
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/25 text-[10px] font-extrabold uppercase tracking-widest text-blue-400 rounded-lg">
+                      {activeArticle.category}
+                    </span>
+                  </div>
+                  <h1 className="text-2xl md:text-4xl font-extrabold text-white leading-tight font-cinzel">
+                    {activeArticle.title}
+                  </h1>
+                  
+                  <div className="flex items-center space-x-4 text-slate-500 text-[10px] font-bold">
+                    <span className="flex items-center space-x-1">
+                      <User className="w-3.5 h-3.5" />
+                      <span>Tim Spesialis InviteStudio</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{activeArticle.readTime} Bacaan</span>
+                    </span>
+                    <span>•</span>
+                    <span>{activeArticle.date}</span>
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* Bottom Call to Action Card */}
-            <div className="bg-gradient-to-r from-[#0d0f1e] to-slate-950 border border-slate-900 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-              
-              <div className="space-y-2 max-w-md text-left">
-                <h3 className="text-base font-extrabold text-white font-cinzel">Siap Membuat Undangan Pernikahan Anda?</h3>
-                <p className="text-xs text-slate-400 leading-relaxed font-light">
-                  Mulai rancang undangan digital impian Anda di InviteStudio secara gratis. Dilengkapi 20+ fitur interaktif dan template adat modern terlengkap di Indonesia.
-                </p>
-              </div>
+                {/* Featured decorative divider */}
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
 
-              <button
-                onClick={() => onSelectTemplate('premiumIndonesianFloral')}
-                className="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-2 shrink-0 cursor-pointer border-0 shadow-lg shadow-blue-600/20"
-              >
-                <Sparkles className="w-4.5 h-4.5" />
-                <span>Buat Undangan Gratis</span>
-              </button>
-            </div>
-          </article>
-        ) : (
-          /* ARTICLES LIST VIEW */
-          <div className="space-y-10 animate-in fade-in duration-200">
-            {/* Catalog Intro Banner */}
-            <div className="text-center max-w-2xl mx-auto space-y-4">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 bg-blue-500/10 border border-blue-500/25 text-blue-400 rounded-full text-[10px] font-bold tracking-widest uppercase">
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Pusat Edukasi &amp; Tips Pernikahan Digital</span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white font-cinzel">
-                Artikel &amp; Panduan Pernikahan Digital
-              </h1>
-              <p className="text-xs text-slate-400 leading-relaxed font-light">
-                Dapatkan tips persiapan pernikahan, susunan acara resepsi, strategi hemat biaya nikah, hingga rekomendasi lagu romantis dari tim spesialis InviteStudio.
-              </p>
-            </div>
+                {/* Description Summary Callout */}
+                <div className="bg-blue-950/20 border-l-4 border-blue-500 p-4 rounded-r-2xl text-xs text-slate-300 italic leading-relaxed">
+                  "{activeArticle.desc}"
+                </div>
 
-            {/* Controls: Search & Category Filter Bar */}
-            <div className="space-y-4 bg-slate-950/60 border border-slate-900 rounded-2xl p-4">
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-                <input
-                  type="text"
-                  placeholder="Cari topik artikel (contoh: rsvp, lagu, anggaran, kata-kata)..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
-                />
-              </div>
+                {/* Smart Link Promo Callout (Top of Content) */}
+                <SmartLinkCallout variant="in-article" />
 
-              {/* Category Filter Pills */}
-              <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer border ${
-                      selectedCategory === cat
-                        ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
+                {/* Article Content paragraphs */}
+                <div className="space-y-5 text-sm text-slate-300 leading-relaxed font-light font-sans">
+                  {activeArticle.content.map((p, idx) => {
+                    if (p.startsWith('## ')) {
+                      return (
+                        <h2 key={idx} className="text-base md:text-lg font-bold text-amber-400 font-cinzel pt-4 pb-1 border-b border-slate-900/60">
+                          {p.replace('## ', '')}
+                        </h2>
+                      );
+                    }
+                    return <p key={idx}>{p}</p>;
+                  })}
+                </div>
 
-            {/* Articles List Grid */}
-            {filteredArticles.length === 0 ? (
-              <div className="text-center py-16 text-slate-500 text-xs font-light">
-                Tidak ada artikel yang cocok dengan pencarian Anda.
-              </div>
-            ) : (
-              <div className="space-y-5">
-                {filteredArticles.map((art) => (
-                  <div 
-                    key={art.slug}
-                    onClick={() => handleArticleClick(art.slug)}
-                    className="bg-slate-950/40 border border-slate-900 hover:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start gap-5 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer text-left group"
-                  >
-                    <div className="space-y-3.5 flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 text-[10px] font-bold text-slate-500">
-                        <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg text-[9px]">
-                          {art.category}
-                        </span>
-                        <span>•</span>
-                        <span>{art.date}</span>
-                      </div>
+                {/* Native Bar Banner Ad (Midway Article) */}
+                <AdNativeBar />
 
-                      <h2 className="text-base md:text-lg font-black text-white group-hover:text-blue-400 transition-colors font-cinzel leading-snug">
-                        {art.title}
-                      </h2>
-                      
-                      <p className="text-xs text-slate-400 leading-relaxed font-light line-clamp-2">
-                        {art.desc}
-                      </p>
+                {/* YouTube Embed Player */}
+                {activeArticle.youtubeId && (
+                  <div className="my-6 aspect-video w-full rounded-2xl overflow-hidden border border-slate-900 shadow-2xl relative bg-slate-950">
+                    <iframe
+                      className="absolute inset-0 w-full h-full"
+                      src={`https://www.youtube.com/embed/${activeArticle.youtubeId}`}
+                      title={activeArticle.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                )}
 
-                      <div className="flex items-center space-x-4 text-[9px] text-slate-500 font-bold uppercase tracking-wider pt-1">
-                        <span className="flex items-center space-x-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          <span>{art.readTime} Baca</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 group-hover:bg-blue-500/10 shrink-0 self-center hidden md:flex">
-                      <ChevronRight className="w-4 h-4" />
+                {/* FAQs Widget section */}
+                {activeArticle.faqs && activeArticle.faqs.length > 0 && (
+                  <div className="bg-slate-950/60 border border-slate-900 rounded-3xl p-6 md:p-8 space-y-4">
+                    <h3 className="text-xs font-extrabold tracking-wider uppercase text-[#D4AF37] flex items-center space-x-2 font-cinzel">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Pertanyaan Umum (FAQ)</span>
+                    </h3>
+                    <div className="space-y-4">
+                      {activeArticle.faqs.map((faq, i) => (
+                        <div key={i} className="space-y-1.5 text-xs bg-slate-900/40 p-4 rounded-xl border border-slate-900">
+                          <h4 className="font-extrabold text-white flex items-start space-x-1.5">
+                            <span className="text-blue-400">Q:</span>
+                            <span>{faq.q}</span>
+                          </h4>
+                          <p className="text-slate-400 font-light leading-relaxed pl-5">
+                            <strong className="text-amber-500 font-normal">A:</strong> {faq.a}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
+
+                {/* Smart Link Callout Card (Bottom of Article) */}
+                <SmartLinkCallout variant="featured" />
+
+                {/* Bottom Call to Action Card */}
+                <div className="bg-gradient-to-r from-[#0d0f1e] to-slate-950 border border-slate-900 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+                  
+                  <div className="space-y-2 max-w-md text-left">
+                    <h3 className="text-base font-extrabold text-white font-cinzel">Siap Membuat Undangan Pernikahan Anda?</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed font-light">
+                      Mulai rancang undangan digital impian Anda di InviteStudio secara gratis. Dilengkapi 20+ fitur interaktif dan template adat modern terlengkap di Indonesia.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => onSelectTemplate('premiumIndonesianFloral')}
+                    className="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-2 shrink-0 cursor-pointer border-0 shadow-lg shadow-blue-600/20"
+                  >
+                    <Sparkles className="w-4.5 h-4.5" />
+                    <span>Buat Undangan Gratis</span>
+                  </button>
+                </div>
+              </article>
+            ) : (
+              /* ARTICLES LIST VIEW */
+              <div className="space-y-8 animate-in fade-in duration-200">
+                {/* Top Leaderboard Banner Ad (728x90) */}
+                <AdLeaderboard />
+
+                {/* Catalog Intro Banner */}
+                <div className="text-center max-w-2xl mx-auto space-y-4">
+                  <div className="inline-flex items-center space-x-2 px-3 py-1 bg-blue-500/10 border border-blue-500/25 text-blue-400 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Pusat Edukasi &amp; Tips Pernikahan Digital</span>
+                  </div>
+                  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white font-cinzel">
+                    Artikel &amp; Panduan Pernikahan Digital
+                  </h1>
+                  <p className="text-xs text-slate-400 leading-relaxed font-light">
+                    Dapatkan tips persiapan pernikahan, susunan acara resepsi, strategi hemat biaya nikah, hingga rekomendasi lagu romantis dari tim spesialis InviteStudio.
+                  </p>
+                </div>
+
+                {/* Featured Smart Link Hook Card */}
+                <SmartLinkCallout variant="featured" />
+
+                {/* Controls: Search & Category Filter Bar */}
+                <div className="space-y-4 bg-slate-950/60 border border-slate-900 rounded-2xl p-4">
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <input
+                      type="text"
+                      placeholder="Cari topik artikel (contoh: rsvp, lagu, anggaran, kata-kata)..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+
+                  {/* Category Filter Pills */}
+                  <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-3.5 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                          selectedCategory === cat
+                            ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Articles List Grid */}
+                {filteredArticles.length === 0 ? (
+                  <div className="text-center py-16 text-slate-500 text-xs font-light">
+                    Tidak ada artikel yang cocok dengan pencarian Anda.
+                  </div>
+                ) : (
+                  <div className="space-y-5">
+                    {filteredArticles.map((art, i) => (
+                      <React.Fragment key={art.slug}>
+                        <div 
+                          onClick={() => handleArticleClick(art.slug)}
+                          className="bg-slate-950/40 border border-slate-900 hover:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start gap-5 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer text-left group"
+                        >
+                          <div className="space-y-3.5 flex-1 min-w-0">
+                            <div className="flex items-center space-x-3 text-[10px] font-bold text-slate-500">
+                              <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg text-[9px]">
+                                {art.category}
+                              </span>
+                              <span>•</span>
+                              <span>{art.date}</span>
+                            </div>
+
+                            <h2 className="text-base md:text-lg font-black text-white group-hover:text-blue-400 transition-colors font-cinzel leading-snug">
+                              {art.title}
+                            </h2>
+                            
+                            <p className="text-xs text-slate-400 leading-relaxed font-light line-clamp-2">
+                              {art.desc}
+                            </p>
+
+                            <div className="flex items-center space-x-4 text-[9px] text-slate-500 font-bold uppercase tracking-wider pt-1">
+                              <span className="flex items-center space-x-1">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{art.readTime} Baca</span>
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 group-hover:bg-blue-500/10 shrink-0 self-center hidden md:flex">
+                            <ChevronRight className="w-4 h-4" />
+                          </div>
+                        </div>
+
+                        {/* Insert In-Article SmartLink or Native Banner after 3rd article */}
+                        {i === 2 && <SmartLinkCallout variant="in-article" />}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                )}
+
+                {/* Bottom Native Bar Banner Ad */}
+                <AdNativeBar />
               </div>
             )}
           </div>
-        )}
+
+          {/* Right Sidebar Banner Column (Desktop Only: 160x600 Skyscraper Ad) */}
+          <aside className="hidden lg:block">
+            <AdSidebar />
+          </aside>
+
+        </div>
       </main>
     </div>
   );
